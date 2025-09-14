@@ -1,0 +1,10 @@
+# melos_managed_dependency_overrides: vet_biotics_auth,vet_biotics_core,vet_biotics_router,vet_biotics_shared
+dependency_overrides:
+  vet_biotics_auth:
+    path: ..\\auth
+  vet_biotics_core:
+    path: ..\\core
+  vet_biotics_router:
+    path: ..\\router
+  vet_biotics_shared:
+    path: ..\\shared

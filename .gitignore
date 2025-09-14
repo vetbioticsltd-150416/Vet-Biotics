@@ -1,0 +1,79 @@
+# Flutter/Dart
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+flutter_*.iml
+
+# Android
+android/app/build/
+android/.gradle/
+android/local.properties
+android/**/GeneratedPluginRegistrant.java
+
+# iOS
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Pods/
+ios/Runner/GeneratedPluginRegistrant.*
+
+# macOS
+macos/Flutter/Flutter.framework
+macos/Flutter/Flutter.podspec
+macos/Pods/
+macos/Runner/GeneratedPluginRegistrant.*
+
+# Windows
+windows/flutter/generated_plugin_registrant.*
+windows/flutter/generated_plugins.cmake
+
+# Linux
+linux/flutter/generated_plugin_registrant.*
+linux/flutter/generated_plugins.cmake
+
+# Web
+web/build/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Melos
+.melos/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IntelliJ IDEA
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.history/

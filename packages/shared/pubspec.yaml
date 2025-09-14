@@ -1,0 +1,72 @@
+name: vet_biotics_shared
+description: Shared utilities and components for Vet Biotics monorepo
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Core Flutter packages
+  flutter_localizations:
+    sdk: flutter
+
+  # State management
+  provider: ^6.1.1
+
+  # Networking
+  dio: ^5.4.0
+
+  # Storage
+  shared_preferences: ^2.2.2
+
+  # Utilities
+  intl: ^0.20.2
+  uuid: ^4.2.1
+  path: ^1.8.3
+  path_provider: ^2.1.2
+
+  # Date/Time
+  persian_datetime_picker: ^2.7.0
+
+  # Validation
+  form_field_validator: ^1.1.0
+
+  # Image handling
+  image_picker: ^1.0.4
+  cached_network_image: ^3.3.0
+
+  # Permissions
+  permission_handler: ^11.3.0
+
+  # Logging
+  logger: ^2.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Temporarily commented out until assets are added
+  # assets:
+  #   - assets/images/
+  #   - assets/icons/
+  #   - assets/fonts/
+
+  # fonts:
+  #   - family: Inter
+  #     fonts:
+  #       - asset: assets/fonts/Inter-Regular.ttf
+  #       - asset: assets/fonts/Inter-Medium.ttf
+  #         weight: 500
+  #       - asset: assets/fonts/Inter-SemiBold.ttf
+  #         weight: 600
+  #       - asset: assets/fonts/Inter-Bold.ttf
+  #         weight: 700

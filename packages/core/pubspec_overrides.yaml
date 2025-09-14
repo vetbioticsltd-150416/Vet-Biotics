@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: vet_biotics_shared
+dependency_overrides:
+  vet_biotics_shared:
+    path: ..\\shared

@@ -1,0 +1,65 @@
+{
+    "dart.sdkPath": "./fvm/default/bin/cache/dart-sdk",
+    "flutter.sdkPath": "./fvm/default/bin",
+    "dart.flutterSdkPath": "./fvm/default/bin",
+    // Analysis options
+    "dart.analysisExcludedFolders": [
+        "packages/**/build",
+        "packages/**/.dart_tool",
+        "packages/**/android",
+        "packages/**/ios",
+        "packages/**/linux",
+        "packages/**/macos",
+        "packages/**/web",
+        "packages/**/windows",
+        "packages/**/test"
+    ],
+    // Editor settings
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    // Dart settings
+    "dart.previewFlutterUiGuides": true,
+    "dart.previewFlutterUiGuidesCustomTracking": true,
+    "dart.lineLength": 120,
+    // File associations
+    "files.associations": {
+        "*.arb": "json",
+        "analysis_options.yaml": "yaml"
+    },
+    // Search settings
+    "search.exclude": {
+        "**/build": true,
+        "**/.dart_tool": true,
+        "**/android": true,
+        "**/ios": true,
+        "**/linux": true,
+        "**/macos": true,
+        "**/web": true,
+        "**/windows": true,
+        "**/*.lock": true,
+        "**/pubspec.lock": true
+    },
+    // Git settings
+    "git.ignoreLimitWarning": true,
+    // Terminal settings
+    "terminal.integrated.shell.windows": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    // Workspace settings
+    "workspace.workspaceFolder": "Vet Biotics Monorepo",
+    // Extension recommendations
+    "extensions.recommendations": [
+        "Dart-Code.dart-code",
+        "Dart-Code.flutter",
+        "ms-vscode.vscode-json",
+        "formulahendry.auto-rename-tag",
+        "ms-vscode.vscode-typescript-next",
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-xml",
+        "christian-kohler.path-intellisense",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode-remote.remote-containers"
+    ]
+}

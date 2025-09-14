@@ -1,0 +1,72 @@
+name: vet_biotics
+repository: https://github.com/your-org/vet_biotics
+
+packages:
+  - packages/**
+
+scripts:
+  bootstrap: melos bootstrap
+  clean: melos clean
+  format: melos run format
+  analyze: melos run analyze
+  test: melos run test
+  build: melos run build
+  pub:get: melos run pub:get
+  pub:upgrade: melos run pub:upgrade
+
+  # Testing scripts
+  test:all: melos run test
+  test:core: melos exec --package=vet_biotics_core -- flutter test
+  test:shared: melos exec --package=vet_biotics_shared -- flutter test
+  test:auth: melos exec --package=vet_biotics_auth -- flutter test
+  test:router: melos exec --package=vet_biotics_router -- flutter test
+
+  # App testing scripts
+  test:app_user: melos exec --package=vet_biotics_app_user -- flutter test
+  test:app_clinic: melos exec --package=vet_biotics_app_clinic -- flutter test
+  test:app_admin: melos exec --package=vet_biotics_app_admin -- flutter test
+
+  # Run scripts
+  run:app_user: cd packages/app_user && flutter run
+  run:app_clinic: cd packages/app_clinic && flutter run
+  run:app_admin: cd packages/app_admin && flutter run
+
+  # Firebase scripts
+  firebase:init: firebase init
+  firebase:deploy:rules: firebase deploy --only firestore:rules,storage
+  firebase:emulators: firebase emulators:start
+
+  # Development scripts
+  dev:clean: |
+    melos clean
+    melos bootstrap
+  dev:setup: |
+    melos bootstrap
+    melos run analyze
+    melos run test
+
+command:
+  bootstrap:
+    runPubGetOffline: true
+    environment:
+      sdk: ^3.9.2
+      flutter: ">=3.0.0"
+
+  version:
+    branch: main
+    releaseUrl: false
+    tagPrefix: "v"
+
+ide:
+  intellij:
+    enabled: true
+  vscode:
+    enabled: true
+    workspaceConfig:
+      extensions:
+        - Dart-Code.dart-code
+        - Dart-Code.flutter
+        - ms-vscode.vscode-json
+        - formulahendry.auto-rename-tag
+        - ms-vscode.vscode-typescript-next
+        - redhat.vscode-yaml

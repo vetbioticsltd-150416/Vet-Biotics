@@ -1,0 +1,19 @@
+library;
+
+export 'src/app.dart';
+export 'src/providers/app_admin_provider.dart';
+export 'src/screens/analytics/analytics_screen.dart';
+export 'src/screens/billing/create_invoice_screen.dart';
+export 'src/screens/billing/invoice_detail_screen.dart';
+export 'src/screens/billing/invoice_list_screen.dart';
+export 'src/screens/billing/payment_processing_screen.dart';
+export 'src/screens/clinic/clinic_detail_screen.dart';
+export 'src/screens/clinic/clinic_list_screen.dart';
+export 'src/screens/clinics/clinics_screen.dart';
+export 'src/screens/dashboard/dashboard_screen.dart';
+export 'src/screens/settings/settings_screen.dart';
+export 'src/screens/users/user_detail_screen.dart';
+export 'src/screens/users/user_list_screen.dart';
+export 'src/screens/users/users_screen.dart';
+export 'src/utils/admin_utils.dart';
+export 'src/widgets/bottom_navigation_bar.dart';

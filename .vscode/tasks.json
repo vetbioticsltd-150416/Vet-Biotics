@@ -1,0 +1,180 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Melos Bootstrap",
+            "type": "shell",
+            "command": "melos",
+            "args": [
+                "bootstrap"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Melos Clean",
+            "type": "shell",
+            "command": "melos",
+            "args": [
+                "clean"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Melos Pub Get",
+            "type": "shell",
+            "command": "melos",
+            "args": [
+                "run",
+                "pub:get"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Melos Analyze",
+            "type": "shell",
+            "command": "melos",
+            "args": [
+                "run",
+                "analyze"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Melos Format",
+            "type": "shell",
+            "command": "melos",
+            "args": [
+                "run",
+                "format"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Melos Test",
+            "type": "shell",
+            "command": "melos",
+            "args": [
+                "run",
+                "test"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Flutter Clean",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "clean"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Flutter Pub Get",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "pub",
+                "get"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Flutter Analyze",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "analyze"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Flutter Format",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "format",
+                "."
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "Flutter Test",
+            "type": "shell",
+            "command": "flutter",
+            "args": [
+                "test"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        }
+    ]
+}

@@ -1,0 +1,41 @@
+name: vet_biotics_auth
+description: Authentication package for Vet Biotics applications
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Core dependencies
+  vet_biotics_core:
+    path: ../core
+  vet_biotics_shared:
+    path: ../shared
+
+  # State management
+  provider: ^6.1.1
+
+  # Form validation
+  form_field_validator: ^1.1.0
+
+  # Local storage
+  shared_preferences: ^2.2.2
+
+  # Firebase Auth (optional - can be toggled)
+  firebase_auth: ^4.19.4
+  google_sign_in: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  assets:
+    - assets/images/

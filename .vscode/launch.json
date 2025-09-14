@@ -1,0 +1,73 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Vet Biotics (app_user)",
+            "request": "launch",
+            "type": "dart",
+            "program": "packages/app_user/lib/main.dart",
+            "cwd": "${workspaceFolder}/packages/app_user"
+        },
+        {
+            "name": "Vet Biotics (app_clinic)",
+            "request": "launch",
+            "type": "dart",
+            "program": "packages/app_clinic/lib/main.dart",
+            "cwd": "${workspaceFolder}/packages/app_clinic"
+        },
+        {
+            "name": "Vet Biotics (app_admin)",
+            "request": "launch",
+            "type": "dart",
+            "program": "packages/app_admin/lib/main.dart",
+            "cwd": "${workspaceFolder}/packages/app_admin"
+        },
+        {
+            "name": "Vet Biotics (auth package)",
+            "request": "launch",
+            "type": "dart",
+            "program": "packages/auth/lib/main.dart",
+            "cwd": "${workspaceFolder}/packages/auth"
+        },
+        {
+            "name": "Vet Biotics (Root)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Vet Biotics (Web)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "-d",
+                "chrome"
+            ]
+        },
+        {
+            "name": "Vet Biotics (Android)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "-d",
+                "android"
+            ]
+        },
+        {
+            "name": "Vet Biotics (iOS)",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "-d",
+                "ios"
+            ]
+        }
+    ]
+}
