@@ -34,3 +34,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+scripts:
+  format: dart format .
+  format:fix: dart format --fix .
+  fix: dart fix --apply
+  analyze: flutter analyze
+  test: flutter test

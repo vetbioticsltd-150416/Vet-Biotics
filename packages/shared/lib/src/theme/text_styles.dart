@@ -1,49 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:shared/src/theme/color_palette.dart';
+import 'package:vet_biotics_shared/shared.dart';
 
 /// Application text styles
 class TextStyles {
   // Light theme text theme
-  static TextTheme get textTheme {
-    return const TextTheme(
-      displayLarge: headline1,
-      displayMedium: headline2,
-      displaySmall: headline3,
-      headlineLarge: headline4,
-      headlineMedium: headline5,
-      headlineSmall: headline6,
-      titleLarge: subtitle1,
-      titleMedium: subtitle2,
-      titleSmall: body1,
-      bodyLarge: body1,
-      bodyMedium: body2,
-      bodySmall: caption,
-      labelLarge: button,
-      labelMedium: button,
-      labelSmall: overline,
-    );
-  }
+  static TextTheme get textTheme => const TextTheme(
+    displayLarge: headline1,
+    displayMedium: headline2,
+    displaySmall: headline3,
+    headlineLarge: headline4,
+    headlineMedium: headline5,
+    headlineSmall: headline6,
+    titleLarge: subtitle1,
+    titleMedium: subtitle2,
+    titleSmall: body1,
+    bodyLarge: body1,
+    bodyMedium: body2,
+    bodySmall: caption,
+    labelLarge: button,
+    labelMedium: button,
+    labelSmall: overline,
+  );
 
   // Dark theme text theme
-  static TextTheme get textThemeDark {
-    return const TextTheme(
-      displayLarge: headline1Dark,
-      displayMedium: headline2Dark,
-      displaySmall: headline3Dark,
-      headlineLarge: headline4Dark,
-      headlineMedium: headline5Dark,
-      headlineSmall: headline6Dark,
-      titleLarge: subtitle1Dark,
-      titleMedium: subtitle2Dark,
-      titleSmall: body1Dark,
-      bodyLarge: body1Dark,
-      bodyMedium: body2Dark,
-      bodySmall: captionDark,
-      labelLarge: buttonDark,
-      labelMedium: buttonDark,
-      labelSmall: overlineDark,
-    );
-  }
+  static TextTheme get textThemeDark => const TextTheme(
+    displayLarge: headline1Dark,
+    displayMedium: headline2Dark,
+    displaySmall: headline3Dark,
+    headlineLarge: headline4Dark,
+    headlineMedium: headline5Dark,
+    headlineSmall: headline6Dark,
+    titleLarge: subtitle1Dark,
+    titleMedium: subtitle2Dark,
+    titleSmall: body1Dark,
+    bodyLarge: body1Dark,
+    bodyMedium: body2Dark,
+    bodySmall: captionDark,
+    labelLarge: buttonDark,
+    labelMedium: buttonDark,
+    labelSmall: overlineDark,
+  );
 
   // Headlines
   static const TextStyle headline1 = TextStyle(
@@ -273,21 +269,14 @@ class TextStyles {
   );
 
   // Helper methods to create custom styles
-  static TextStyle withColor(TextStyle style, Color color) {
-    return style.copyWith(color: color);
-  }
+  static TextStyle withColor(TextStyle style, Color color) => style.copyWith(color: color);
 
-  static TextStyle withWeight(TextStyle style, FontWeight weight) {
-    return style.copyWith(fontWeight: weight);
-  }
+  static TextStyle withWeight(TextStyle style, FontWeight weight) => style.copyWith(fontWeight: weight);
 
-  static TextStyle withSize(TextStyle style, double size) {
-    return style.copyWith(fontSize: size);
-  }
+  static TextStyle withSize(TextStyle style, double size) => style.copyWith(fontSize: size);
 
-  static TextStyle withOpacity(TextStyle style, double opacity) {
-    return style.copyWith(color: style.color?.withOpacity(opacity));
-  }
+  static TextStyle withOpacity(TextStyle style, double opacity) =>
+      style.copyWith(color: style.color?.withValues(alpha: opacity));
 
   // Create custom text style
   static TextStyle custom({
@@ -298,15 +287,13 @@ class TextStyles {
     double height = 1.0,
     TextDecoration? decoration,
     FontStyle? fontStyle,
-  }) {
-    return TextStyle(
-      fontSize: fontSize,
-      fontWeight: fontWeight,
-      color: color,
-      letterSpacing: letterSpacing,
-      height: height,
-      decoration: decoration,
-      fontStyle: fontStyle,
-    );
-  }
+  }) => TextStyle(
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    color: color,
+    letterSpacing: letterSpacing,
+    height: height,
+    decoration: decoration,
+    fontStyle: fontStyle,
+  );
 }

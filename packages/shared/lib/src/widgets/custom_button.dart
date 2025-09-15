@@ -1,11 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared/src/constants/ui_constants.dart';
+import 'package:vet_biotics_shared/shared.dart';
 
 /// Custom button with different styles and states
 class CustomButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
-  final ButtonStyle style;
+  final CustomButtonStyle style;
   final bool isLoading;
   final Widget? leadingIcon;
   final Widget? trailingIcon;
@@ -18,7 +19,7 @@ class CustomButton extends StatelessWidget {
     super.key,
     required this.text,
     this.onPressed,
-    this.style = ButtonStyle.primary,
+    this.style = CustomButtonStyle.primary,
     this.isLoading = false,
     this.leadingIcon,
     this.trailingIcon,
@@ -50,38 +51,38 @@ class CustomButton extends StatelessWidget {
     );
 
     switch (style) {
-      case ButtonStyle.primary:
+      case CustomButtonStyle.primary:
         return baseStyle.copyWith(
           backgroundColor: WidgetStateProperty.all(theme.primaryColor),
           foregroundColor: WidgetStateProperty.all(Colors.white),
         );
 
-      case ButtonStyle.secondary:
+      case CustomButtonStyle.secondary:
         return baseStyle.copyWith(
           backgroundColor: WidgetStateProperty.all(theme.secondaryHeaderColor),
           foregroundColor: WidgetStateProperty.all(theme.primaryColor),
         );
 
-      case ButtonStyle.outline:
+      case CustomButtonStyle.outline:
         return baseStyle.copyWith(
           backgroundColor: WidgetStateProperty.all(Colors.transparent),
           foregroundColor: WidgetStateProperty.all(theme.primaryColor),
           side: WidgetStateProperty.all(BorderSide(color: theme.primaryColor, width: 1)),
         );
 
-      case ButtonStyle.danger:
+      case CustomButtonStyle.danger:
         return baseStyle.copyWith(
           backgroundColor: WidgetStateProperty.all(Colors.red),
           foregroundColor: WidgetStateProperty.all(Colors.white),
         );
 
-      case ButtonStyle.success:
+      case CustomButtonStyle.success:
         return baseStyle.copyWith(
           backgroundColor: WidgetStateProperty.all(Colors.green),
           foregroundColor: WidgetStateProperty.all(Colors.white),
         );
 
-      case ButtonStyle.disabled:
+      case CustomButtonStyle.disabled:
         return baseStyle.copyWith(
           backgroundColor: WidgetStateProperty.all(Colors.grey),
           foregroundColor: WidgetStateProperty.all(Colors.white),
@@ -111,10 +112,23 @@ class CustomButton extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('text', text));
+    properties.add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
+    properties.add(EnumProperty<CustomButtonStyle>('style', style));
+    properties.add(DiagnosticsProperty<bool>('isLoading', isLoading));
+    properties.add(DoubleProperty('width', width));
+    properties.add(DoubleProperty('height', height));
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry?>('padding', padding));
+    properties.add(DiagnosticsProperty<BorderRadius?>('borderRadius', borderRadius));
+  }
 }
 
 /// Button style enum
-enum ButtonStyle { primary, secondary, outline, danger, success, disabled }
+enum CustomButtonStyle { primary, secondary, outline, danger, success, disabled }
 
 /// Custom text button
 class CustomTextButton extends StatelessWidget {
@@ -142,6 +156,15 @@ class CustomTextButton extends StatelessWidget {
             TextStyle(color: theme.primaryColor, fontWeight: FontWeight.w500, fontSize: UiConstants.fontSizeM),
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('text', text));
+    properties.add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
+    properties.add(DiagnosticsProperty<TextStyle?>('textStyle', textStyle));
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry?>('padding', padding));
   }
 }
 
@@ -176,5 +199,16 @@ class CustomIconButton extends StatelessWidget {
       padding: padding ?? const EdgeInsets.all(UiConstants.spacingS),
       tooltip: tooltip,
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<IconData>('icon', icon));
+    properties.add(ObjectFlagProperty<VoidCallback?>.has('onPressed', onPressed));
+    properties.add(DoubleProperty('size', size));
+    properties.add(ColorProperty('color', color));
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry?>('padding', padding));
+    properties.add(StringProperty('tooltip', tooltip));
   }
 }

@@ -1,4 +1,4 @@
-import 'package:shared/src/models/base_model.dart';
+import 'package:vet_biotics_shared/shared.dart';
 
 /// Generic API response wrapper
 class ApiResponse<T> extends BaseModel {
@@ -11,42 +11,34 @@ class ApiResponse<T> extends BaseModel {
 
   const ApiResponse({required this.success, this.message, this.data, this.error, this.statusCode, this.metadata});
 
-  factory ApiResponse.success({String? message, T? data, int? statusCode, Map<String, dynamic>? metadata}) {
-    return ApiResponse(success: true, message: message, data: data, statusCode: statusCode ?? 200, metadata: metadata);
-  }
+  factory ApiResponse.success({String? message, T? data, int? statusCode, Map<String, dynamic>? metadata}) =>
+      ApiResponse(success: true, message: message, data: data, statusCode: statusCode ?? 200, metadata: metadata);
 
-  factory ApiResponse.error({String? message, String? error, int? statusCode, Map<String, dynamic>? metadata}) {
-    return ApiResponse(
-      success: false,
-      message: message,
-      error: error,
-      statusCode: statusCode ?? 500,
-      metadata: metadata,
-    );
-  }
+  factory ApiResponse.error({String? message, String? error, int? statusCode, Map<String, dynamic>? metadata}) =>
+      ApiResponse(success: false, message: message, error: error, statusCode: statusCode ?? 500, metadata: metadata);
 
-  factory ApiResponse.fromJson(Map<String, dynamic> json, T Function(Map<String, dynamic>)? dataFromJson) {
-    return ApiResponse<T>(
-      success: json['success'] as bool? ?? false,
-      message: json['message'] as String?,
-      data: json['data'] != null && dataFromJson != null ? dataFromJson(json['data'] as Map<String, dynamic>) : null,
-      error: json['error'] as String?,
-      statusCode: json['statusCode'] as int?,
-      metadata: json['metadata'] as Map<String, dynamic>?,
-    );
-  }
+  factory ApiResponse.fromJson(Map<String, dynamic> json, T Function(Map<String, dynamic>)? dataFromJson) =>
+      ApiResponse<T>(
+        success: json['success'] as bool? ?? false,
+        message: json['message'] as String?,
+        data: json['data'] != null && dataFromJson != null ? dataFromJson(json['data'] as Map<String, dynamic>) : null,
+        error: json['error'] as String?,
+        statusCode: json['statusCode'] as int?,
+        metadata: json['metadata'] as Map<String, dynamic>?,
+      );
 
   @override
-  Map<String, dynamic> toJson() {
-    return {
-      'success': success,
-      'message': message,
-      'data': data,
-      'error': error,
-      'statusCode': statusCode,
-      'metadata': metadata,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'success': success,
+    'message': message,
+    'data': data,
+    'error': error,
+    'statusCode': statusCode,
+    'metadata': metadata,
+  };
+
+  @override
+  String? get id => null;
 
   @override
   List<Object?> get props => [success, message, data, error, statusCode, metadata];
@@ -93,16 +85,14 @@ class PaginatedResponse<T> extends ApiResponse<List<T>> {
     required PaginationInfo pagination,
     int? statusCode,
     Map<String, dynamic>? metadata,
-  }) {
-    return PaginatedResponse(
-      success: true,
-      message: message,
-      data: data,
-      pagination: pagination,
-      statusCode: statusCode ?? 200,
-      metadata: metadata,
-    );
-  }
+  }) => PaginatedResponse(
+    success: true,
+    message: message,
+    data: data,
+    pagination: pagination,
+    statusCode: statusCode ?? 200,
+    metadata: metadata,
+  );
 
   factory PaginatedResponse.fromJson(Map<String, dynamic> json, T Function(Map<String, dynamic>) itemFromJson) {
     final data = json['data'] != null

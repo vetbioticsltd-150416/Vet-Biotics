@@ -23,9 +23,14 @@ export 'src/widgets/custom_button.dart';
 export 'src/widgets/custom_text_field.dart';
 export 'src/widgets/loading_indicator.dart';
 export 'src/widgets/error_view.dart';
+export 'src/widgets/responsive_layout.dart';
+export 'src/widgets/animated_widgets.dart';
+export 'src/widgets/enhanced_error_view.dart';
+export 'src/widgets/error_boundary.dart';
 
 export 'src/theme/app_theme.dart';
 export 'src/theme/color_palette.dart';
 export 'src/theme/text_styles.dart';
+export 'src/providers/theme_provider.dart';
 
 export 'src/assets/app_assets.dart';

@@ -2,7 +2,6 @@ import 'package:intl/intl.dart';
 
 /// Date utility functions
 class DateUtils {
-  static final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
   static final DateFormat _timeFormat = DateFormat('HH:mm');
   static final DateFormat _dateTimeFormat = DateFormat('dd/MM/yyyy HH:mm');
 
@@ -13,14 +12,10 @@ class DateUtils {
   }
 
   /// Format time to string
-  static String formatTime(DateTime time) {
-    return _timeFormat.format(time);
-  }
+  static String formatTime(DateTime time) => _timeFormat.format(time);
 
   /// Format date and time to string
-  static String formatDateTime(DateTime dateTime) {
-    return _dateTimeFormat.format(dateTime);
-  }
+  static String formatDateTime(DateTime dateTime) => _dateTimeFormat.format(dateTime);
 
   /// Parse date from string
   static DateTime? parseDate(String dateString, {String pattern = 'dd/MM/yyyy'}) {
@@ -48,14 +43,10 @@ class DateUtils {
   }
 
   /// Get start of day
-  static DateTime startOfDay(DateTime date) {
-    return DateTime(date.year, date.month, date.day);
-  }
+  static DateTime startOfDay(DateTime date) => DateTime(date.year, date.month, date.day);
 
   /// Get end of day
-  static DateTime endOfDay(DateTime date) {
-    return DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
-  }
+  static DateTime endOfDay(DateTime date) => DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
 
   /// Get start of week (Monday)
   static DateTime startOfWeek(DateTime date) {
@@ -70,9 +61,7 @@ class DateUtils {
   }
 
   /// Get start of month
-  static DateTime startOfMonth(DateTime date) {
-    return DateTime(date.year, date.month, 1);
-  }
+  static DateTime startOfMonth(DateTime date) => DateTime(date.year, date.month, 1);
 
   /// Get end of month
   static DateTime endOfMonth(DateTime date) {
@@ -81,24 +70,16 @@ class DateUtils {
   }
 
   /// Get start of year
-  static DateTime startOfYear(DateTime date) {
-    return DateTime(date.year, 1, 1);
-  }
+  static DateTime startOfYear(DateTime date) => DateTime(date.year, 1, 1);
 
   /// Get end of year
-  static DateTime endOfYear(DateTime date) {
-    return DateTime(date.year, 12, 31, 23, 59, 59, 999);
-  }
+  static DateTime endOfYear(DateTime date) => DateTime(date.year, 12, 31, 23, 59, 59, 999);
 
   /// Add days to date
-  static DateTime addDays(DateTime date, int days) {
-    return date.add(Duration(days: days));
-  }
+  static DateTime addDays(DateTime date, int days) => date.add(Duration(days: days));
 
   /// Subtract days from date
-  static DateTime subtractDays(DateTime date, int days) {
-    return date.subtract(Duration(days: days));
-  }
+  static DateTime subtractDays(DateTime date, int days) => date.subtract(Duration(days: days));
 
   /// Add months to date
   static DateTime addMonths(DateTime date, int months) {
@@ -109,19 +90,13 @@ class DateUtils {
   }
 
   /// Subtract months from date
-  static DateTime subtractMonths(DateTime date, int months) {
-    return addMonths(date, -months);
-  }
+  static DateTime subtractMonths(DateTime date, int months) => addMonths(date, -months);
 
   /// Add years to date
-  static DateTime addYears(DateTime date, int years) {
-    return DateTime(date.year + years, date.month, date.day);
-  }
+  static DateTime addYears(DateTime date, int years) => DateTime(date.year + years, date.month, date.day);
 
   /// Subtract years from date
-  static DateTime subtractYears(DateTime date, int years) {
-    return addYears(date, -years);
-  }
+  static DateTime subtractYears(DateTime date, int years) => addYears(date, -years);
 
   /// Calculate age from birth date
   static int calculateAge(DateTime birthDate) {
@@ -152,14 +127,10 @@ class DateUtils {
   }
 
   /// Check if date is in the past
-  static bool isPast(DateTime date) {
-    return date.isBefore(DateTime.now());
-  }
+  static bool isPast(DateTime date) => date.isBefore(DateTime.now());
 
   /// Check if date is in the future
-  static bool isFuture(DateTime date) {
-    return date.isAfter(DateTime.now());
-  }
+  static bool isFuture(DateTime date) => date.isAfter(DateTime.now());
 
   /// Get time ago string
   static String getTimeAgo(DateTime date) {
@@ -184,14 +155,10 @@ class DateUtils {
   }
 
   /// Get days in month
-  static int getDaysInMonth(int year, int month) {
-    return DateTime(year, month + 1, 0).day;
-  }
+  static int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 
   /// Check if year is leap year
-  static bool isLeapYear(int year) {
-    return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-  }
+  static bool isLeapYear(int year) => year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
 
   /// Get week number of year
   static int getWeekNumber(DateTime date) {
@@ -214,31 +181,22 @@ class DateUtils {
   }
 
   /// Check if two dates are same day
-  static bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
-  }
+  static bool isSameDay(DateTime date1, DateTime date2) =>
+      date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
 
   /// Check if date is between two dates
-  static bool isBetween(DateTime date, DateTime start, DateTime end) {
-    return date.isAfter(start) && date.isBefore(end);
-  }
+  static bool isBetween(DateTime date, DateTime start, DateTime end) => date.isAfter(start) && date.isBefore(end);
 }
 
 extension DateTimeUtils on DateTime {
   /// Format date using DateUtils
-  String format([String pattern = 'dd/MM/yyyy']) {
-    return DateUtils.formatDate(this, pattern: pattern);
-  }
+  String format([String pattern = 'dd/MM/yyyy']) => DateUtils.formatDate(this, pattern: pattern);
 
   /// Check if date is same day
-  bool isSameDay(DateTime other) {
-    return DateUtils.isSameDay(this, other);
-  }
+  bool isSameDay(DateTime other) => DateUtils.isSameDay(this, other);
 
   /// Check if date is between two dates
-  bool isBetween(DateTime start, DateTime end) {
-    return DateUtils.isBetween(this, start, end);
-  }
+  bool isBetween(DateTime start, DateTime end) => DateUtils.isBetween(this, start, end);
 
   /// Get time ago
   String get timeAgo => DateUtils.getTimeAgo(this);

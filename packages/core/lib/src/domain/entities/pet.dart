@@ -1,4 +1,4 @@
-import 'package:core/src/domain/entities/base_entity.dart';
+import 'base_entity.dart';
 
 /// Pet species
 enum PetSpecies {
@@ -15,9 +15,8 @@ enum PetSpecies {
   final String value;
   final String displayName;
 
-  static PetSpecies fromString(String value) {
-    return PetSpecies.values.firstWhere((species) => species.value == value, orElse: () => PetSpecies.other);
-  }
+  static PetSpecies fromString(String value) =>
+      PetSpecies.values.firstWhere((species) => species.value == value, orElse: () => PetSpecies.other);
 }
 
 /// Pet gender
@@ -30,9 +29,8 @@ enum PetGender {
   final String value;
   final String displayName;
 
-  static PetGender fromString(String value) {
-    return PetGender.values.firstWhere((gender) => gender.value == value, orElse: () => PetGender.unknown);
-  }
+  static PetGender fromString(String value) =>
+      PetGender.values.firstWhere((gender) => gender.value == value, orElse: () => PetGender.unknown);
 }
 
 /// Pet status
@@ -46,9 +44,8 @@ enum PetStatus {
   final String value;
   final String displayName;
 
-  static PetStatus fromString(String value) {
-    return PetStatus.values.firstWhere((status) => status.value == value, orElse: () => PetStatus.active);
-  }
+  static PetStatus fromString(String value) =>
+      PetStatus.values.firstWhere((status) => status.value == value, orElse: () => PetStatus.active);
 
   bool get isActive => this == PetStatus.active;
   bool get isInactive => this == PetStatus.inactive;
@@ -75,10 +72,10 @@ class Pet extends AuditableEntity {
   final DateTime? lastVisitDate;
   final Map<String, dynamic>? metadata;
 
-  const Pet({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  Pet({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.name,
     required this.species,
@@ -96,7 +93,7 @@ class Pet extends AuditableEntity {
     this.status = PetStatus.active,
     this.lastVisitDate,
     this.metadata,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now());
 
   /// Get age in years
   int? get ageInYears {
@@ -186,9 +183,7 @@ class Pet extends AuditableEntity {
   ];
 
   @override
-  bool get isValid {
-    return super.isValid && name.isNotEmpty && ownerId.isNotEmpty;
-  }
+  bool get isValid => name.isNotEmpty && ownerId.isNotEmpty;
 
   @override
   List<String> get validationErrors {
@@ -216,6 +211,7 @@ class Pet extends AuditableEntity {
   }
 
   /// Create a copy with updated fields
+  @override
   Pet copyWith({
     String? id,
     String? name,
@@ -237,30 +233,52 @@ class Pet extends AuditableEntity {
     DateTime? updatedAt,
     bool? isActive,
     Map<String, dynamic>? metadata,
-  }) {
-    return Pet(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      species: species ?? this.species,
-      breed: breed ?? this.breed,
-      gender: gender ?? this.gender,
-      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
-      weight: weight ?? this.weight,
-      color: color ?? this.color,
-      microchipId: microchipId ?? this.microchipId,
-      allergies: allergies ?? this.allergies,
-      medications: medications ?? this.medications,
-      notes: notes ?? this.notes,
-      photoUrls: photoUrls ?? this.photoUrls,
-      ownerId: ownerId ?? this.ownerId,
-      status: status ?? this.status,
-      lastVisitDate: lastVisitDate ?? this.lastVisitDate,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      isActive: isActive ?? this.isActive,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+  }) => Pet(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    species: species ?? this.species,
+    breed: breed ?? this.breed,
+    gender: gender ?? this.gender,
+    dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+    weight: weight ?? this.weight,
+    color: color ?? this.color,
+    microchipId: microchipId ?? this.microchipId,
+    allergies: allergies ?? this.allergies,
+    medications: medications ?? this.medications,
+    notes: notes ?? this.notes,
+    photoUrls: photoUrls ?? this.photoUrls,
+    ownerId: ownerId ?? this.ownerId,
+    status: status ?? this.status,
+    lastVisitDate: lastVisitDate ?? this.lastVisitDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    metadata: metadata ?? this.metadata,
+  );
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'isActive': isActive,
+    'name': name,
+    'species': species.value,
+    'breed': breed,
+    'color': color,
+    'dateOfBirth': dateOfBirth?.toIso8601String(),
+    'gender': gender.value,
+    'weight': weight,
+    'microchipId': microchipId,
+    'allergies': allergies,
+    'medications': medications,
+    'notes': notes,
+    'photoUrls': photoUrls,
+    'ownerId': ownerId,
+    'status': status.value,
+    'lastVisitDate': lastVisitDate?.toIso8601String(),
+    'metadata': metadata,
+  };
 }
 
 /// Pet breed information
@@ -285,31 +303,27 @@ class PetBreed {
     this.origin,
   });
 
-  factory PetBreed.fromJson(Map<String, dynamic> json) {
-    return PetBreed(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      species: PetSpecies.fromString(json['species'] as String),
-      description: json['description'] as String?,
-      averageWeight: (json['averageWeight'] as num?)?.toDouble(),
-      averageLifespan: json['averageLifespan'] as int?,
-      characteristics: (json['characteristics'] as List<dynamic>?)?.cast<String>(),
-      origin: json['origin'] as String?,
-    );
-  }
+  factory PetBreed.fromJson(Map<String, dynamic> json) => PetBreed(
+    id: json['id'] as String,
+    name: json['name'] as String,
+    species: PetSpecies.fromString(json['species'] as String),
+    description: json['description'] as String?,
+    averageWeight: (json['averageWeight'] as num?)?.toDouble(),
+    averageLifespan: json['averageLifespan'] as int?,
+    characteristics: (json['characteristics'] as List<dynamic>?)?.cast<String>(),
+    origin: json['origin'] as String?,
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'species': species.value,
-      'description': description,
-      'averageWeight': averageWeight,
-      'averageLifespan': averageLifespan,
-      'characteristics': characteristics,
-      'origin': origin,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'species': species.value,
+    'description': description,
+    'averageWeight': averageWeight,
+    'averageLifespan': averageLifespan,
+    'characteristics': characteristics,
+    'origin': origin,
+  };
 }
 
 /// Pet medical history summary
@@ -332,27 +346,23 @@ class PetMedicalSummary {
     this.nextAppointmentDate,
   });
 
-  factory PetMedicalSummary.fromJson(Map<String, dynamic> json) {
-    return PetMedicalSummary(
-      petId: json['petId'] as String,
-      totalVisits: json['totalVisits'] as int? ?? 0,
-      lastVisitDate: json['lastVisitDate'] != null ? DateTime.parse(json['lastVisitDate'] as String) : null,
-      currentMedications: (json['currentMedications'] as List<dynamic>?)?.cast<String>() ?? [],
-      allergies: (json['allergies'] as List<dynamic>?)?.cast<String>() ?? [],
-      needsVaccination: json['needsVaccination'] as bool? ?? false,
-      nextAppointmentDate: json['nextAppointmentDate'] as String?,
-    );
-  }
+  factory PetMedicalSummary.fromJson(Map<String, dynamic> json) => PetMedicalSummary(
+    petId: json['petId'] as String,
+    totalVisits: json['totalVisits'] as int? ?? 0,
+    lastVisitDate: json['lastVisitDate'] != null ? DateTime.parse(json['lastVisitDate'] as String) : null,
+    currentMedications: (json['currentMedications'] as List<dynamic>?)?.cast<String>() ?? [],
+    allergies: (json['allergies'] as List<dynamic>?)?.cast<String>() ?? [],
+    needsVaccination: json['needsVaccination'] as bool? ?? false,
+    nextAppointmentDate: json['nextAppointmentDate'] as String?,
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'petId': petId,
-      'totalVisits': totalVisits,
-      'lastVisitDate': lastVisitDate?.toIso8601String(),
-      'currentMedications': currentMedications,
-      'allergies': allergies,
-      'needsVaccination': needsVaccination,
-      'nextAppointmentDate': nextAppointmentDate,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'petId': petId,
+    'totalVisits': totalVisits,
+    'lastVisitDate': lastVisitDate?.toIso8601String(),
+    'currentMedications': currentMedications,
+    'allergies': allergies,
+    'needsVaccination': needsVaccination,
+    'nextAppointmentDate': nextAppointmentDate,
+  };
 }

@@ -82,3 +82,10 @@ flutter:
           weight: 500
         - asset: fonts/Roboto-Bold.ttf
           weight: 700
+
+scripts:
+  format: dart format .
+  format:fix: dart format --fix .
+  fix: dart fix --apply
+  analyze: flutter analyze
+  test: flutter test

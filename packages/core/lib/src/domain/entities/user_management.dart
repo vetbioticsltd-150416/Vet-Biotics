@@ -1,4 +1,4 @@
-import 'package:core/src/domain/entities/base_entity.dart';
+import 'base_entity.dart';
 
 /// User role with permissions
 enum UserRole {
@@ -47,12 +47,10 @@ enum UserRole {
   final String displayName;
   final List<Permission> permissions;
 
-  static UserRole fromString(String value) {
-    return UserRole.values.firstWhere((role) => role.value == value, orElse: () => UserRole.customer);
-  }
+  static UserRole fromString(String value) => UserRole.values.firstWhere((role) => role.value == value, orElse: () => UserRole.customer);
 
   bool hasPermission(Permission permission) => permissions.contains(permission);
-  bool hasAnyPermission(List<Permission> permissions) => permissions.any((p) => hasPermission(p));
+  bool hasAnyPermission(List<Permission> permissions) => permissions.any(hasPermission);
 }
 
 /// Permission enum
@@ -97,9 +95,7 @@ enum Permission {
   const Permission(this.value);
   final String value;
 
-  static Permission fromString(String value) {
-    return Permission.values.firstWhere((permission) => permission.value == value);
-  }
+  static Permission fromString(String value) => Permission.values.firstWhere((permission) => permission.value == value);
 
   String get displayName {
     switch (this) {
@@ -167,15 +163,16 @@ class UserProfile extends AuditableEntity {
   final UserRole role;
   final String? clinicId;
   final bool isEmailVerified;
+  @override
   final bool isActive;
   final DateTime? lastLoginAt;
   final Map<String, dynamic>? preferences;
   final Map<String, dynamic>? metadata;
 
-  const UserProfile({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  UserProfile({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.userId,
     required this.email,
@@ -189,11 +186,14 @@ class UserProfile extends AuditableEntity {
     this.role = UserRole.customer,
     this.clinicId,
     this.isEmailVerified = false,
-    this.isActive = true,
     this.lastLoginAt,
     this.preferences,
     this.metadata,
-  });
+  }) : super(
+          createdAt: createdAt ?? DateTime.now(),
+          updatedAt: updatedAt ?? DateTime.now(),
+        ),
+        isActive = isActive;
 
   @override
   List<Object?> get props => [
@@ -217,12 +217,7 @@ class UserProfile extends AuditableEntity {
   ];
 
   @override
-  bool get isValid {
-    return super.isValid &&
-           userId.isNotEmpty &&
-           email.isNotEmpty &&
-           RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(email);
-  }
+  bool get isValid => super.isValid && userId.isNotEmpty && email.isNotEmpty && RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(email);
 
   @override
   List<String> get validationErrors {
@@ -241,6 +236,7 @@ class UserProfile extends AuditableEntity {
     return errors;
   }
 
+  @override
   UserProfile copyWith({
     String? id,
     String? userId,
@@ -261,8 +257,7 @@ class UserProfile extends AuditableEntity {
     DateTime? updatedAt,
     Map<String, dynamic>? preferences,
     Map<String, dynamic>? metadata,
-  }) {
-    return UserProfile(
+  }) => UserProfile(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       email: email ?? this.email,
@@ -283,7 +278,6 @@ class UserProfile extends AuditableEntity {
       preferences: preferences ?? this.preferences,
       metadata: metadata ?? this.metadata,
     );
-  }
 
   /// Check if user has a specific permission
   bool hasPermission(Permission permission) => role.hasPermission(permission);
@@ -299,8 +293,7 @@ class UserProfile extends AuditableEntity {
     if (dateOfBirth == null) return null;
     final now = DateTime.now();
     int age = now.year - dateOfBirth!.year;
-    if (now.month < dateOfBirth!.month ||
-        (now.month == dateOfBirth!.month && now.day < dateOfBirth!.day)) {
+    if (now.month < dateOfBirth!.month || (now.month == dateOfBirth!.month && now.day < dateOfBirth!.day)) {
       age--;
     }
     return age;
@@ -310,10 +303,34 @@ class UserProfile extends AuditableEntity {
   bool get isAdmin => role == UserRole.superAdmin || role == UserRole.clinicAdmin;
 
   /// Check if user is clinic staff
-  bool get isClinicStaff => role == UserRole.clinicAdmin || role == UserRole.veterinarian || role == UserRole.receptionist;
+  bool get isClinicStaff =>
+      role == UserRole.clinicAdmin || role == UserRole.veterinarian || role == UserRole.receptionist;
 
   /// Check if user is customer
   bool get isCustomer => role == UserRole.customer;
+
+  @override
+  Map<String, dynamic> toJson() => {
+      'id': id,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'isActive': isActive,
+      'userId': userId,
+      'email': email,
+      'displayName': displayName,
+      'phoneNumber': phoneNumber,
+      'avatarUrl': avatarUrl,
+      'dateOfBirth': dateOfBirth?.toIso8601String(),
+      'gender': gender,
+      'address': address,
+      'bio': bio,
+      'role': role.value,
+      'clinicId': clinicId,
+      'isEmailVerified': isEmailVerified,
+      'lastLoginAt': lastLoginAt?.toIso8601String(),
+      'preferences': preferences,
+      'metadata': metadata,
+    };
 }
 
 /// User activity log entity
@@ -329,10 +346,10 @@ class UserActivity extends AuditableEntity {
   final String? relatedEntityId;
   final String? relatedEntityType;
 
-  const UserActivity({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  UserActivity({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.userId,
     required this.type,
@@ -344,7 +361,10 @@ class UserActivity extends AuditableEntity {
     this.clinicId,
     this.relatedEntityId,
     this.relatedEntityType,
-  });
+  }) : super(
+          createdAt: createdAt ?? DateTime.now(),
+          updatedAt: updatedAt ?? DateTime.now(),
+        );
 
   @override
   List<Object?> get props => [
@@ -362,11 +382,7 @@ class UserActivity extends AuditableEntity {
   ];
 
   @override
-  bool get isValid {
-    return super.isValid &&
-           userId.isNotEmpty &&
-           action.isNotEmpty;
-  }
+  bool get isValid => super.isValid && userId.isNotEmpty && action.isNotEmpty;
 
   @override
   List<String> get validationErrors {
@@ -383,6 +399,7 @@ class UserActivity extends AuditableEntity {
     return errors;
   }
 
+  @override
   UserActivity copyWith({
     String? id,
     String? userId,
@@ -398,8 +415,7 @@ class UserActivity extends AuditableEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
-  }) {
-    return UserActivity(
+  }) => UserActivity(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       type: type ?? this.type,
@@ -415,7 +431,25 @@ class UserActivity extends AuditableEntity {
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
     );
-  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+      'id': id,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'isActive': isActive,
+      'userId': userId,
+      'type': type.value,
+      'action': action,
+      'clinicId': clinicId,
+      'description': description,
+      'details': details,
+      'ipAddress': ipAddress,
+      'userAgent': userAgent,
+      'relatedEntityId': relatedEntityId,
+      'relatedEntityType': relatedEntityType,
+      'metadata': metadata,
+    };
 }
 
 /// Activity type enum
@@ -437,9 +471,7 @@ enum ActivityType {
   final String value;
   final String displayName;
 
-  static ActivityType fromString(String value) {
-    return ActivityType.values.firstWhere((type) => type.value == value, orElse: () => ActivityType.system);
-  }
+  static ActivityType fromString(String value) => ActivityType.values.firstWhere((type) => type.value == value, orElse: () => ActivityType.system);
 }
 
 /// Notification preferences entity
@@ -455,10 +487,10 @@ class NotificationPreferences extends AuditableEntity {
   final bool systemNotifications;
   final Map<String, dynamic>? customSettings;
 
-  const NotificationPreferences({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  NotificationPreferences({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.userId,
     this.emailNotifications = true,
@@ -470,7 +502,10 @@ class NotificationPreferences extends AuditableEntity {
     this.marketingEmails = false,
     this.systemNotifications = true,
     this.customSettings,
-  });
+  }) : super(
+          createdAt: createdAt ?? DateTime.now(),
+          updatedAt: updatedAt ?? DateTime.now(),
+        );
 
   @override
   List<Object?> get props => [
@@ -488,9 +523,7 @@ class NotificationPreferences extends AuditableEntity {
   ];
 
   @override
-  bool get isValid {
-    return super.isValid && userId.isNotEmpty;
-  }
+  bool get isValid => super.isValid && userId.isNotEmpty;
 
   @override
   List<String> get validationErrors {
@@ -503,6 +536,7 @@ class NotificationPreferences extends AuditableEntity {
     return errors;
   }
 
+  @override
   NotificationPreferences copyWith({
     String? id,
     String? userId,
@@ -518,8 +552,7 @@ class NotificationPreferences extends AuditableEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
-  }) {
-    return NotificationPreferences(
+  }) => NotificationPreferences(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       emailNotifications: emailNotifications ?? this.emailNotifications,
@@ -535,7 +568,22 @@ class NotificationPreferences extends AuditableEntity {
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
     );
-  }
+
+  @override
+  Map<String, dynamic> toJson() => {
+      'id': id,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'isActive': isActive,
+      'userId': userId,
+      'emailNotifications': emailNotifications,
+      'pushNotifications': pushNotifications,
+      'smsNotifications': smsNotifications,
+      'appointmentReminders': appointmentReminders,
+      'marketingEmails': marketingEmails,
+      'newsletter': newsletter,
+      'metadata': metadata,
+    };
 }
 
 /// Password reset token entity
@@ -545,33 +593,25 @@ class PasswordResetToken extends AuditableEntity {
   final DateTime expiresAt;
   final bool isUsed;
 
-  const PasswordResetToken({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  PasswordResetToken({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.userId,
     required this.token,
     required this.expiresAt,
     this.isUsed = false,
-  });
+  }) : super(
+          createdAt: createdAt ?? DateTime.now(),
+          updatedAt: updatedAt ?? DateTime.now(),
+        );
 
   @override
-  List<Object?> get props => [
-    ...super.props,
-    userId,
-    token,
-    expiresAt,
-    isUsed,
-  ];
+  List<Object?> get props => [...super.props, userId, token, expiresAt, isUsed];
 
   @override
-  bool get isValid {
-    return super.isValid &&
-           userId.isNotEmpty &&
-           token.isNotEmpty &&
-           expiresAt.isAfter(DateTime.now());
-  }
+  bool get isValid => super.isValid && userId.isNotEmpty && token.isNotEmpty && expiresAt.isAfter(DateTime.now());
 
   @override
   List<String> get validationErrors {
@@ -594,6 +634,7 @@ class PasswordResetToken extends AuditableEntity {
 
   bool get isExpired => expiresAt.isBefore(DateTime.now());
 
+  @override
   PasswordResetToken copyWith({
     String? id,
     String? userId,
@@ -603,8 +644,7 @@ class PasswordResetToken extends AuditableEntity {
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
-  }) {
-    return PasswordResetToken(
+  }) => PasswordResetToken(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       token: token ?? this.token,
@@ -614,6 +654,16 @@ class PasswordResetToken extends AuditableEntity {
       updatedAt: updatedAt ?? this.updatedAt,
       isActive: isActive ?? this.isActive,
     );
-  }
-}
 
+  @override
+  Map<String, dynamic> toJson() => {
+      'id': id,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'isActive': isActive,
+      'userId': userId,
+      'token': token,
+      'expiresAt': expiresAt.toIso8601String(),
+      'isUsed': isUsed,
+    };
+}

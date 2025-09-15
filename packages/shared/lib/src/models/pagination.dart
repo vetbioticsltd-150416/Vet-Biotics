@@ -1,4 +1,4 @@
-import 'package:shared/src/models/base_model.dart';
+import 'package:vet_biotics_shared/shared.dart';
 
 /// Pagination information
 class PaginationInfo extends BaseModel {
@@ -18,28 +18,27 @@ class PaginationInfo extends BaseModel {
     required this.hasPreviousPage,
   });
 
-  factory PaginationInfo.fromJson(Map<String, dynamic> json) {
-    return PaginationInfo(
-      currentPage: json['currentPage'] as int? ?? 1,
-      totalPages: json['totalPages'] as int? ?? 1,
-      totalItems: json['totalItems'] as int? ?? 0,
-      itemsPerPage: json['itemsPerPage'] as int? ?? 20,
-      hasNextPage: json['hasNextPage'] as bool? ?? false,
-      hasPreviousPage: json['hasPreviousPage'] as bool? ?? false,
-    );
-  }
+  factory PaginationInfo.fromJson(Map<String, dynamic> json) => PaginationInfo(
+    currentPage: json['currentPage'] as int? ?? 1,
+    totalPages: json['totalPages'] as int? ?? 1,
+    totalItems: json['totalItems'] as int? ?? 0,
+    itemsPerPage: json['itemsPerPage'] as int? ?? 20,
+    hasNextPage: json['hasNextPage'] as bool? ?? false,
+    hasPreviousPage: json['hasPreviousPage'] as bool? ?? false,
+  );
 
   @override
-  Map<String, dynamic> toJson() {
-    return {
-      'currentPage': currentPage,
-      'totalPages': totalPages,
-      'totalItems': totalItems,
-      'itemsPerPage': itemsPerPage,
-      'hasNextPage': hasNextPage,
-      'hasPreviousPage': hasPreviousPage,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'currentPage': currentPage,
+    'totalPages': totalPages,
+    'totalItems': totalItems,
+    'itemsPerPage': itemsPerPage,
+    'hasNextPage': hasNextPage,
+    'hasPreviousPage': hasPreviousPage,
+  };
+
+  @override
+  String? get id => null;
 
   @override
   List<Object?> get props => [currentPage, totalPages, totalItems, itemsPerPage, hasNextPage, hasPreviousPage];
@@ -95,18 +94,21 @@ class PaginationParams {
     return params;
   }
 
-  PaginationParams copyWith({int? page, int? limit, String? sortBy, String? sortOrder, Map<String, dynamic>? filters}) {
-    return PaginationParams(
-      page: page ?? this.page,
-      limit: limit ?? this.limit,
-      sortBy: sortBy ?? this.sortBy,
-      sortOrder: sortOrder ?? this.sortOrder,
-      filters: filters ?? this.filters,
-    );
-  }
+  PaginationParams copyWith({
+    int? page,
+    int? limit,
+    String? sortBy,
+    String? sortOrder,
+    Map<String, dynamic>? filters,
+  }) => PaginationParams(
+    page: page ?? this.page,
+    limit: limit ?? this.limit,
+    sortBy: sortBy ?? this.sortBy,
+    sortOrder: sortOrder ?? this.sortOrder,
+    filters: filters ?? this.filters,
+  );
 
   @override
-  String toString() {
-    return 'PaginationParams(page: $page, limit: $limit, sortBy: $sortBy, sortOrder: $sortOrder, filters: $filters)';
-  }
+  String toString() =>
+      'PaginationParams(page: $page, limit: $limit, sortBy: $sortBy, sortOrder: $sortOrder, filters: $filters)';
 }

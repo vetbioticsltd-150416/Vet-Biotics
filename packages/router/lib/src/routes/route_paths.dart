@@ -45,7 +45,9 @@ class RoutePaths {
   static const String admin = '/admin';
   static const String adminDashboard = '/admin/dashboard';
   static const String adminUsers = '/admin/users';
+  static String adminUserDetail(String id) => '/admin/users/$id';
   static const String adminClinics = '/admin/clinics';
+  static String adminClinicDetail(String id) => '/admin/clinics/$id';
   static const String adminAnalytics = '/admin/analytics';
   static const String adminSettings = '/admin/settings';
 

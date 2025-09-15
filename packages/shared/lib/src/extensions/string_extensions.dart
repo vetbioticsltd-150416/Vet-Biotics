@@ -64,7 +64,7 @@ extension StringExtensions on String {
   }
 
   /// Format as currency
-  String formatAsCurrency({String symbol = '\$', String locale = 'en_US'}) {
+  String formatAsCurrency({String symbol = r'$', String locale = 'en_US'}) {
     final number = double.tryParse(this);
     if (number == null) return this;
 

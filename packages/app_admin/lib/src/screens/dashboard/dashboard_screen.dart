@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vet_biotics_shared/shared.dart';
 
 import '../../providers/app_admin_provider.dart';
 import '../../widgets/stat_card.dart';
@@ -17,7 +18,11 @@ class DashboardScreen extends StatelessWidget {
       body: Consumer<AppAdminProvider>(
         builder: (context, provider, child) {
           if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: EnhancedLoadingIndicator(
+                message: 'Đang tải dữ liệu...',
+              ),
+            );
           }
 
           return RefreshIndicator(
@@ -26,83 +31,106 @@ class DashboardScreen extends StatelessWidget {
               await Future.delayed(const Duration(seconds: 1));
               provider.loadMockData();
             },
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Key Metrics Section
-                  const Text('Key Metrics', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
-                  GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
+              child: ResponsiveContainer(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      StatCard(
-                        title: 'Total Clinics',
-                        value: provider.totalClinics.toString(),
-                        icon: Icons.business,
-                        color: Colors.blue,
+                      // Key Metrics Section
+                      const ResponsiveText(
+                        'Key Metrics',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       ),
-                      StatCard(
-                        title: 'Total Users',
-                        value: provider.totalUsers.toString(),
-                        icon: Icons.people,
-                        color: Colors.green,
+                      const SizedBox(height: 16),
+                      ResponsiveGridView(
+                        children: [
+                          AnimatedListItem(
+                            index: 0,
+                            child: StatCard(
+                              title: 'Total Clinics',
+                              value: provider.totalClinics.toString(),
+                              icon: Icons.business,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          AnimatedListItem(
+                            index: 1,
+                            child: StatCard(
+                              title: 'Total Users',
+                              value: provider.totalUsers.toString(),
+                              icon: Icons.people,
+                              color: Colors.green,
+                            ),
+                          ),
+                          AnimatedListItem(
+                            index: 2,
+                            child: StatCard(
+                              title: 'Total Appointments',
+                              value: provider.totalAppointments.toString(),
+                              icon: Icons.calendar_today,
+                              color: Colors.orange,
+                            ),
+                          ),
+                          AnimatedListItem(
+                            index: 3,
+                            child: StatCard(
+                              title: 'Total Revenue',
+                              value: '\$${provider.totalRevenue.toStringAsFixed(0)}',
+                              icon: Icons.attach_money,
+                              color: Colors.purple,
+                            ),
+                          ),
+                        ],
                       ),
-                      StatCard(
-                        title: 'Total Appointments',
-                        value: provider.totalAppointments.toString(),
-                        icon: Icons.calendar_today,
-                        color: Colors.orange,
+
+                      const SizedBox(height: 32),
+
+                      // Quick Actions Section
+                      const ResponsiveText(
+                        'Quick Actions',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       ),
-                      StatCard(
-                        title: 'Total Revenue',
-                        value: '\$${provider.totalRevenue.toStringAsFixed(0)}',
-                        icon: Icons.attach_money,
-                        color: Colors.purple,
+                      const SizedBox(height: 16),
+                      ResponsiveGridView(
+                        children: [
+                          AnimatedListItem(
+                            index: 0,
+                            child: _buildQuickActionCard(context, 'Add Clinic', Icons.add_business, Colors.blue, () {
+                              // Navigate to add clinic screen
+                              Navigator.pushNamed(context, '/admin/clinics/add');
+                            }),
+                          ),
+                          AnimatedListItem(
+                            index: 1,
+                            child: _buildQuickActionCard(context, 'Manage Users', Icons.people, Colors.green, () {
+                              // Navigate to users screen
+                              context.go('/admin/users');
+                            }),
+                          ),
+                          AnimatedListItem(
+                            index: 2,
+                            child: _buildQuickActionCard(context, 'View Analytics', Icons.analytics, Colors.orange, () {
+                              // Navigate to analytics screen
+                              Navigator.pushNamed(context, '/admin/analytics');
+                            }),
+                          ),
+                          AnimatedListItem(
+                            index: 3,
+                            child: _buildQuickActionCard(context, 'Settings', Icons.settings, Colors.purple, () {
+                              // Navigate to settings screen
+                              Navigator.pushNamed(context, '/admin/settings');
+                            }),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
 
-                  const SizedBox(height: 32),
+                      const SizedBox(height: 32),
 
-                  // Quick Actions Section
-                  const Text('Quick Actions', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
-                  GridView.count(
-                    crossAxisCount: 2,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
-                    children: [
-                      _buildQuickActionCard(context, 'Add Clinic', Icons.add_business, Colors.blue, () {
-                        // Navigate to add clinic screen
-                        Navigator.pushNamed(context, '/admin/clinics/add');
-                      }),
-                      _buildQuickActionCard(context, 'Add User', Icons.person_add, Colors.green, () {
-                        // Navigate to add user screen
-                        Navigator.pushNamed(context, '/admin/users/add');
-                      }),
-                      _buildQuickActionCard(context, 'View Analytics', Icons.analytics, Colors.orange, () {
-                        // Navigate to analytics screen
-                        Navigator.pushNamed(context, '/admin/analytics');
-                      }),
-                      _buildQuickActionCard(context, 'Settings', Icons.settings, Colors.purple, () {
-                        // Navigate to settings screen
-                        Navigator.pushNamed(context, '/admin/settings');
-                      }),
-                    ],
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  // Recent Activity Section
-                  const Text('Recent Activity', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      // Recent Activity Section
+                      const ResponsiveText(
+                        'Recent Activity',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
                   const SizedBox(height: 16),
                   _buildRecentActivityList(context),
                 ],
@@ -115,26 +143,22 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget _buildQuickActionCard(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
-    return Card(
+    return AnimatedCard(
       elevation: 4,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 48, color: color),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-              ),
-            ],
+      onTap: onTap,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AnimatedScaleIn(
+            child: Icon(icon, size: 48, color: color),
           ),
-        ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
@@ -154,12 +178,18 @@ class DashboardScreen extends StatelessWidget {
       itemCount: activities.length,
       itemBuilder: (context, index) {
         final activity = activities[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            leading: const Icon(Icons.history),
-            title: Text(activity['action']!),
-            subtitle: Text('${activity['clinic']} • ${activity['time']}'),
+        return AnimatedListItem(
+          index: index,
+          baseDelay: const Duration(milliseconds: 200),
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            child: AnimatedCard(
+              child: ListTile(
+                leading: const Icon(Icons.history),
+                title: Text(activity['action']!),
+                subtitle: Text('${activity['clinic']} • ${activity['time']}'),
+              ),
+            ),
           ),
         );
       },

@@ -14,6 +14,7 @@ export 'src/screens/dashboard/dashboard_screen.dart';
 export 'src/screens/settings/settings_screen.dart';
 export 'src/screens/users/user_detail_screen.dart';
 export 'src/screens/users/user_list_screen.dart';
+export 'src/screens/users/user_profile_edit_screen.dart';
 export 'src/screens/users/users_screen.dart';
 export 'src/utils/admin_utils.dart';
 export 'src/widgets/bottom_navigation_bar.dart';

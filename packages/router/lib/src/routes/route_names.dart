@@ -45,7 +45,9 @@ class RouteNames {
   static const String admin = 'admin';
   static const String adminDashboard = 'admin_dashboard';
   static const String adminUsers = 'admin_users';
+  static const String adminUserDetail = 'admin_user_detail';
   static const String adminClinics = 'admin_clinics';
+  static const String adminClinicDetail = 'admin_clinic_detail';
   static const String adminAnalytics = 'admin_analytics';
   static const String adminSettings = 'admin_settings';
 

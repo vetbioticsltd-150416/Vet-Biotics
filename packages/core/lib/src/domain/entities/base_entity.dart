@@ -1,160 +1,127 @@
 import 'package:equatable/equatable.dart';
 
-/// Base entity class for all domain entities
+/// Base entity class that all domain entities should extend
+/// Provides common functionality like ID, timestamps, and validation
 abstract class BaseEntity extends Equatable {
-  const BaseEntity();
+  final String id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isActive;
 
-  /// Unique identifier for the entity
-  String? get id;
+  const BaseEntity({required this.id, required this.createdAt, required this.updatedAt, this.isActive = true});
 
-  /// Check if entity is valid
-  bool get isValid => true;
+  /// Create a copy with modified properties
+  BaseEntity copyWith({String? id, DateTime? createdAt, DateTime? updatedAt, bool? isActive});
 
-  /// Get validation errors
-  List<String> get validationErrors => [];
+  /// Convert to JSON for serialization
+  Map<String, dynamic> toJson();
 
-  @override
-  List<Object?> get props => [id];
-}
+  /// Create from JSON
+  factory BaseEntity.fromJson(Map<String, dynamic> json) {
+    throw UnimplementedError('fromJson must be implemented by subclasses');
+  }
 
-/// Base entity with common audit fields
-abstract class AuditableEntity extends BaseEntity {
-  @override
-  final String? id;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final bool? isActive;
+  /// Validate entity data
+  bool get isValid;
 
-  const AuditableEntity({this.id, this.createdAt, this.updatedAt, this.isActive});
-
+  /// Get list of properties for Equatable comparison
   @override
   List<Object?> get props => [id, createdAt, updatedAt, isActive];
 
-  /// Check if entity was recently created (within last hour)
-  bool get isRecentlyCreated {
-    if (createdAt == null) return false;
-    return DateTime.now().difference(createdAt!).inHours < 1;
-  }
-
-  /// Check if entity was recently updated (within last hour)
-  bool get isRecentlyUpdated {
-    if (updatedAt == null) return false;
-    return DateTime.now().difference(updatedAt!).inHours < 1;
+  /// Get string representation
+  @override
+  String toString() {
+    return '$runtimeType(id: $id, createdAt: $createdAt, updatedAt: $updatedAt, isActive: $isActive)';
   }
 }
 
-/// Base entity with soft delete capability
-abstract class SoftDeletableEntity extends AuditableEntity {
-  final DateTime? deletedAt;
+/// Auditable entity that tracks creation and modification metadata
+abstract class AuditableEntity extends BaseEntity {
+  final String? createdBy;
+  final String? updatedBy;
 
-  const SoftDeletableEntity({super.id, super.createdAt, super.updatedAt, super.isActive, this.deletedAt});
+  const AuditableEntity({
+    required super.id,
+    required super.createdAt,
+    required super.updatedAt,
+    super.isActive,
+    this.createdBy,
+    this.updatedBy,
+  });
 
   @override
-  List<Object?> get props => [...super.props, deletedAt];
+  AuditableEntity copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? createdBy,
+    String? updatedBy,
+  });
+
+  @override
+  Map<String, dynamic> toJson();
+
+  @override
+  List<Object?> get props => [...super.props, createdBy, updatedBy];
+}
+
+/// Soft delete entity with deletion tracking
+abstract class SoftDeleteEntity extends AuditableEntity {
+  final DateTime? deletedAt;
+  final String? deletedBy;
+
+  const SoftDeleteEntity({
+    required super.id,
+    required super.createdAt,
+    required super.updatedAt,
+    super.isActive,
+    super.createdBy,
+    super.updatedBy,
+    this.deletedAt,
+    this.deletedBy,
+  });
+
+  @override
+  SoftDeleteEntity copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? createdBy,
+    String? updatedBy,
+    DateTime? deletedAt,
+    String? deletedBy,
+  });
+
+  @override
+  Map<String, dynamic> toJson();
+
+  @override
+  List<Object?> get props => [...super.props, deletedAt, deletedBy];
 
   /// Check if entity is soft deleted
   bool get isDeleted => deletedAt != null;
-
-  /// Check if entity is active (not soft deleted and isActive is true)
-  @override
-  bool get isValid => !isDeleted && (isActive ?? true);
 }
 
-/// Base entity with versioning
-abstract class VersionedEntity extends AuditableEntity {
-  final int? version;
+/// Versioned entity for optimistic concurrency control
+abstract class VersionedEntity extends BaseEntity {
+  final int version;
 
-  const VersionedEntity({super.id, super.createdAt, super.updatedAt, super.isActive, this.version});
+  const VersionedEntity({
+    required super.id,
+    required super.createdAt,
+    required super.updatedAt,
+    super.isActive,
+    this.version = 1,
+  });
+
+  @override
+  VersionedEntity copyWith({String? id, DateTime? createdAt, DateTime? updatedAt, bool? isActive, int? version});
+
+  @override
+  Map<String, dynamic> toJson();
 
   @override
   List<Object?> get props => [...super.props, version];
-
-  /// Check if entity has been modified
-  bool get isModified => version != null && version! > 1;
-}
-
-/// Generic result wrapper for operations
-class EntityResult<T> {
-  final T? data;
-  final String? error;
-  final bool success;
-
-  const EntityResult.success(this.data) : success = true, error = null;
-
-  const EntityResult.failure(this.error) : success = false, data = null;
-
-  factory EntityResult.fromData(T data) => EntityResult.success(data);
-  factory EntityResult.fromError(String error) => EntityResult.failure(error);
-
-  bool get hasData => data != null;
-  bool get hasError => error != null;
-}
-
-/// Pagination metadata for entity collections
-class PaginationMeta {
-  final int currentPage;
-  final int totalPages;
-  final int totalItems;
-  final int itemsPerPage;
-  final bool hasNextPage;
-  final bool hasPreviousPage;
-
-  const PaginationMeta({
-    required this.currentPage,
-    required this.totalPages,
-    required this.totalItems,
-    required this.itemsPerPage,
-    required this.hasNextPage,
-    required this.hasPreviousPage,
-  });
-
-  factory PaginationMeta.fromJson(Map<String, dynamic> json) {
-    return PaginationMeta(
-      currentPage: json['currentPage'] as int? ?? 1,
-      totalPages: json['totalPages'] as int? ?? 1,
-      totalItems: json['totalItems'] as int? ?? 0,
-      itemsPerPage: json['itemsPerPage'] as int? ?? 20,
-      hasNextPage: json['hasNextPage'] as bool? ?? false,
-      hasPreviousPage: json['hasPreviousPage'] as bool? ?? false,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'currentPage': currentPage,
-      'totalPages': totalPages,
-      'totalItems': totalItems,
-      'itemsPerPage': itemsPerPage,
-      'hasNextPage': hasNextPage,
-      'hasPreviousPage': hasPreviousPage,
-    };
-  }
-
-  int get offset => (currentPage - 1) * itemsPerPage;
-  int get limit => itemsPerPage;
-}
-
-/// Paginated result wrapper
-class PaginatedResult<T> {
-  final List<T> items;
-  final PaginationMeta meta;
-
-  const PaginatedResult({required this.items, required this.meta});
-
-  factory PaginatedResult.fromJson(Map<String, dynamic> json, T Function(Map<String, dynamic>) fromJson) {
-    final items =
-        (json['items'] as List<dynamic>?)?.map((item) => fromJson(item as Map<String, dynamic>)).toList() ?? [];
-
-    final meta = PaginationMeta.fromJson(json['meta'] as Map<String, dynamic>);
-
-    return PaginatedResult(items: items, meta: meta);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'items': items, 'meta': meta.toJson()};
-  }
-
-  bool get isEmpty => items.isEmpty;
-  bool get isNotEmpty => items.isNotEmpty;
-  int get length => items.length;
 }

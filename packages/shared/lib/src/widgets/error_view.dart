@@ -1,6 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared/src/constants/ui_constants.dart';
-import 'package:shared/src/widgets/custom_button.dart';
+import 'package:vet_biotics_shared/shared.dart';
 
 /// Error view widget for displaying error states
 class ErrorView extends StatelessWidget {
@@ -25,49 +25,45 @@ class ErrorView extends StatelessWidget {
     this.type = ErrorViewType.card,
   });
 
-  factory ErrorView.network({String? message, VoidCallback? onRetry, ErrorViewType type = ErrorViewType.fullscreen}) {
-    return ErrorView(
-      title: 'Không có kết nối',
-      message: message ?? 'Vui lòng kiểm tra kết nối internet và thử lại',
-      icon: Icons.wifi_off,
-      onRetry: onRetry,
-      retryText: 'Thử lại',
-      type: type,
-    );
-  }
+  factory ErrorView.network({String? message, VoidCallback? onRetry, ErrorViewType type = ErrorViewType.fullscreen}) =>
+      ErrorView(
+        title: 'Không có kết nối',
+        message: message ?? 'Vui lòng kiểm tra kết nối internet và thử lại',
+        icon: Icons.wifi_off,
+        onRetry: onRetry,
+        retryText: 'Thử lại',
+        type: type,
+      );
 
-  factory ErrorView.server({String? message, VoidCallback? onRetry, ErrorViewType type = ErrorViewType.card}) {
-    return ErrorView(
-      title: 'Lỗi máy chủ',
-      message: message ?? 'Có lỗi xảy ra từ máy chủ. Vui lòng thử lại sau',
-      icon: Icons.cloud_off,
-      onRetry: onRetry,
-      retryText: 'Thử lại',
-      type: type,
-    );
-  }
+  factory ErrorView.server({String? message, VoidCallback? onRetry, ErrorViewType type = ErrorViewType.card}) =>
+      ErrorView(
+        title: 'Lỗi máy chủ',
+        message: message ?? 'Có lỗi xảy ra từ máy chủ. Vui lòng thử lại sau',
+        icon: Icons.cloud_off,
+        onRetry: onRetry,
+        retryText: 'Thử lại',
+        type: type,
+      );
 
-  factory ErrorView.notFound({String? message, VoidCallback? onRetry, ErrorViewType type = ErrorViewType.card}) {
-    return ErrorView(
-      title: 'Không tìm thấy',
-      message: message ?? 'Không tìm thấy dữ liệu bạn yêu cầu',
-      icon: Icons.search_off,
-      onRetry: onRetry,
-      retryText: 'Quay lại',
-      type: type,
-    );
-  }
+  factory ErrorView.notFound({String? message, VoidCallback? onRetry, ErrorViewType type = ErrorViewType.card}) =>
+      ErrorView(
+        title: 'Không tìm thấy',
+        message: message ?? 'Không tìm thấy dữ liệu bạn yêu cầu',
+        icon: Icons.search_off,
+        onRetry: onRetry,
+        retryText: 'Quay lại',
+        type: type,
+      );
 
-  factory ErrorView.permission({String? message, VoidCallback? onRetry, ErrorViewType type = ErrorViewType.card}) {
-    return ErrorView(
-      title: 'Không có quyền truy cập',
-      message: message ?? 'Bạn không có quyền truy cập vào tính năng này',
-      icon: Icons.lock_outline,
-      onRetry: onRetry,
-      retryText: 'Yêu cầu quyền',
-      type: type,
-    );
-  }
+  factory ErrorView.permission({String? message, VoidCallback? onRetry, ErrorViewType type = ErrorViewType.card}) =>
+      ErrorView(
+        title: 'Không có quyền truy cập',
+        message: message ?? 'Bạn không có quyền truy cập vào tính năng này',
+        icon: Icons.lock_outline,
+        onRetry: onRetry,
+        retryText: 'Yêu cầu quyền',
+        type: type,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -83,198 +79,145 @@ class ErrorView extends StatelessWidget {
     }
   }
 
-  Widget _buildFullscreenError(ThemeData theme) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(UiConstants.spacingXL),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 80, color: theme.colorScheme.error),
-              const SizedBox(height: UiConstants.spacingXL),
-              Text(
-                title,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  color: theme.colorScheme.error,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: UiConstants.spacingM),
-              Text(message, style: theme.textTheme.bodyLarge, textAlign: TextAlign.center),
-              if (subtitle != null) ...[
-                const SizedBox(height: UiConstants.spacingS),
-                Text(
-                  subtitle!,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-              const SizedBox(height: UiConstants.spacingXL),
-              if (customAction != null)
-                customAction!
-              else if (onRetry != null)
-                CustomButton(text: retryText ?? 'Thử lại', onPressed: onRetry, style: ButtonStyle.primary),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCardError(ThemeData theme) {
-    return Card(
-      margin: const EdgeInsets.all(UiConstants.spacingM),
+  Widget _buildFullscreenError(ThemeData theme) => Scaffold(
+    body: Center(
       child: Padding(
-        padding: const EdgeInsets.all(UiConstants.spacingL),
+        padding: const EdgeInsets.all(UiConstants.spacingXL),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: theme.colorScheme.error),
-            const SizedBox(height: UiConstants.spacingL),
+            Icon(icon, size: 80, color: theme.colorScheme.error),
+            const SizedBox(height: UiConstants.spacingXL),
             Text(
               title,
-              style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.error, fontWeight: FontWeight.bold),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                color: theme.colorScheme.error,
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: UiConstants.spacingS),
-            Text(message, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
+            const SizedBox(height: UiConstants.spacingM),
+            Text(message, style: theme.textTheme.bodyLarge, textAlign: TextAlign.center),
             if (subtitle != null) ...[
               const SizedBox(height: UiConstants.spacingS),
               Text(
                 subtitle!,
-                style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.7)),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                ),
                 textAlign: TextAlign.center,
               ),
             ],
-            const SizedBox(height: UiConstants.spacingL),
+            const SizedBox(height: UiConstants.spacingXL),
             if (customAction != null)
               customAction!
             else if (onRetry != null)
-              CustomButton(text: retryText ?? 'Thử lại', onPressed: onRetry, style: ButtonStyle.outline),
+              CustomButton(text: retryText ?? 'Thử lại', onPressed: onRetry, style: CustomButtonStyle.primary),
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
 
-  Widget _buildInlineError(ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.all(UiConstants.spacingM),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.error.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(UiConstants.borderRadiusM),
-        border: Border.all(color: theme.colorScheme.error.withOpacity(0.3)),
-      ),
-      child: Row(
+  Widget _buildCardError(ThemeData theme) => Card(
+    margin: const EdgeInsets.all(UiConstants.spacingM),
+    child: Padding(
+      padding: const EdgeInsets.all(UiConstants.spacingL),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 24, color: theme.colorScheme.error),
-          const SizedBox(width: UiConstants.spacingM),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: theme.colorScheme.error,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(message, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error)),
-                if (subtitle != null) ...[
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle!,
-                    style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error.withOpacity(0.7)),
-                  ),
-                ],
-              ],
-            ),
+          Icon(icon, size: 48, color: theme.colorScheme.error),
+          const SizedBox(height: UiConstants.spacingL),
+          Text(
+            title,
+            style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.error, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
           ),
-          if (customAction != null) ...[
-            const SizedBox(width: UiConstants.spacingM),
-            customAction!,
-          ] else if (onRetry != null) ...[
-            const SizedBox(width: UiConstants.spacingM),
-            CustomIconButton(
-              icon: Icons.refresh,
-              onPressed: onRetry,
-              color: theme.colorScheme.error,
-              tooltip: retryText ?? 'Thử lại',
+          const SizedBox(height: UiConstants.spacingS),
+          Text(message, style: theme.textTheme.bodyMedium, textAlign: TextAlign.center),
+          if (subtitle != null) ...[
+            const SizedBox(height: UiConstants.spacingS),
+            Text(
+              subtitle!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+              ),
+              textAlign: TextAlign.center,
             ),
           ],
+          const SizedBox(height: UiConstants.spacingL),
+          if (customAction != null)
+            customAction!
+          else if (onRetry != null)
+            CustomButton(text: retryText ?? 'Thử lại', onPressed: onRetry, style: CustomButtonStyle.outline),
         ],
       ),
-    );
+    ),
+  );
+
+  Widget _buildInlineError(ThemeData theme) => Container(
+    padding: const EdgeInsets.all(UiConstants.spacingM),
+    decoration: BoxDecoration(
+      color: theme.colorScheme.error.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(UiConstants.borderRadiusM),
+      border: Border.all(color: theme.colorScheme.error.withValues(alpha: 0.3)),
+    ),
+    child: Row(
+      children: [
+        Icon(icon, size: 24, color: theme.colorScheme.error),
+        const SizedBox(width: UiConstants.spacingM),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                title,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: theme.colorScheme.error,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(message, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error)),
+              if (subtitle != null) ...[
+                const SizedBox(height: 2),
+                Text(
+                  subtitle!,
+                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error.withValues(alpha: 0.7)),
+                ),
+              ],
+            ],
+          ),
+        ),
+        if (customAction != null) ...[
+          const SizedBox(width: UiConstants.spacingM),
+          customAction!,
+        ] else if (onRetry != null) ...[
+          const SizedBox(width: UiConstants.spacingM),
+          CustomIconButton(
+            icon: Icons.refresh,
+            onPressed: onRetry,
+            color: theme.colorScheme.error,
+            tooltip: retryText ?? 'Thử lại',
+          ),
+        ],
+      ],
+    ),
+  );
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(StringProperty('title', title));
+    properties.add(StringProperty('message', message));
+    properties.add(StringProperty('subtitle', subtitle));
+    properties.add(DiagnosticsProperty<IconData>('icon', icon));
+    properties.add(ObjectFlagProperty<VoidCallback?>.has('onRetry', onRetry));
+    properties.add(StringProperty('retryText', retryText));
+    properties.add(EnumProperty<ErrorViewType>('type', type));
   }
 }
 
 /// Error view type enum
 enum ErrorViewType { fullscreen, card, inline }
-
-/// Error boundary widget to catch and display errors
-class ErrorBoundary extends StatefulWidget {
-  final Widget child;
-  final Widget Function(Object error, StackTrace stackTrace)? errorBuilder;
-  final void Function(Object error, StackTrace stackTrace)? onError;
-
-  const ErrorBoundary({super.key, required this.child, this.errorBuilder, this.onError});
-
-  @override
-  State<ErrorBoundary> createState() => _ErrorBoundaryState();
-}
-
-class _ErrorBoundaryState extends State<ErrorBoundary> {
-  Object? _error;
-  StackTrace? _stackTrace;
-
-  @override
-  void initState() {
-    super.initState();
-    // Catch Flutter errors
-    FlutterError.onError = (FlutterErrorDetails details) {
-      _handleError(details.exception, details.stack ?? StackTrace.empty);
-    };
-  }
-
-  void _handleError(Object error, StackTrace stackTrace) {
-    setState(() {
-      _error = error;
-      _stackTrace = stackTrace;
-    });
-
-    widget.onError?.call(error, stackTrace);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_error != null) {
-      if (widget.errorBuilder != null) {
-        return widget.errorBuilder!(_error!, _stackTrace!);
-      }
-
-      return ErrorView(
-        title: 'Đã xảy ra lỗi',
-        message: 'Có lỗi không mong muốn xảy ra trong ứng dụng',
-        subtitle: 'Vui lòng thử lại hoặc liên hệ hỗ trợ',
-        icon: Icons.bug_report,
-        onRetry: () {
-          setState(() {
-            _error = null;
-            _stackTrace = null;
-          });
-        },
-        retryText: 'Thử lại',
-        type: ErrorViewType.fullscreen,
-      );
-    }
-
-    return widget.child;
-  }
-}

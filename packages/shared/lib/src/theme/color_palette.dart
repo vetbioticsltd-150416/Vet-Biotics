@@ -143,16 +143,14 @@ class ColorPalette {
   }
 
   // Get color with opacity
-  static Color withOpacity(Color color, double opacity) {
-    return color.withOpacity(opacity);
-  }
+  static Color withOpacity(Color color, double opacity) => color.withValues(alpha: opacity);
 
   // Blend two colors
   static Color blend(Color color1, Color color2, double ratio) {
-    final r = (color1.red * ratio + color2.red * (1 - ratio)).round();
-    final g = (color1.green * ratio + color2.green * (1 - ratio)).round();
-    final b = (color1.blue * ratio + color2.blue * (1 - ratio)).round();
-    final a = (color1.alpha * ratio + color2.alpha * (1 - ratio)).round();
+    final r = ((color1.r * 255.0).round() * ratio + (color2.r * 255.0).round() * (1 - ratio)).round();
+    final g = ((color1.g * 255.0).round() * ratio + (color2.g * 255.0).round() * (1 - ratio)).round();
+    final b = ((color1.b * 255.0).round() * ratio + (color2.b * 255.0).round() * (1 - ratio)).round();
+    final a = ((color1.a * 255.0).round() * ratio + (color2.a * 255.0).round() * (1 - ratio)).round();
     return Color.fromARGB(a, r, g, b);
   }
 

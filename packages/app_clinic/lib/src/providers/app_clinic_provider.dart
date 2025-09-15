@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:vet_biotics_core/core.dart';
+import 'package:vet_biotics_auth/auth.dart';
 
 class AppClinicProvider extends ChangeNotifier {
+  final DatabaseProvider _databaseProvider;
+
+  AppClinicProvider({DatabaseProvider? databaseProvider}) : _databaseProvider = databaseProvider ?? DatabaseProvider();
+
   // Clinic info
   Clinic? _currentClinic;
   List<User> _staff = [];
@@ -20,7 +24,7 @@ class AppClinicProvider extends ChangeNotifier {
 
   // Billing
   List<Billing> _todayBilling = [];
-  double _todayRevenue = 0.0;
+  double _todayRevenue = 0;
 
   // Inventory
   List<InventoryItem> _lowStockItems = [];
@@ -144,7 +148,7 @@ class AppClinicProvider extends ChangeNotifier {
   void _calculateTodayRevenue() {
     _todayRevenue = _todayBilling
         .where((billing) => billing.status == BillingStatus.paid)
-        .fold(0.0, (sum, billing) => sum + billing.totalAmount);
+        .fold(0, (sum, billing) => sum + billing.totalAmount);
   }
 
   void addBillingRecord(Billing billing) {
@@ -171,8 +175,96 @@ class AppClinicProvider extends ChangeNotifier {
 
   // Load clinic data
   Future<void> loadClinicData() async {
-    // TODO: Implement data loading from repositories
-    // This will use the core repositories to fetch data
+    if (_currentClinic == null) return;
+
+    try {
+      // Load today's appointments
+      final todayAppointments = await _databaseProvider.getClinicAppointments(
+        _currentClinic!.id!,
+        date: DateTime.now(),
+      );
+      _todayAppointments = todayAppointments.map((a) => a as Appointment).toList();
+
+      // Load upcoming appointments (next 7 days)
+      final nextWeek = DateTime.now().add(const Duration(days: 7));
+      final upcomingAppointments = await _databaseProvider.getClinicAppointments(_currentClinic!.id!, date: nextWeek);
+      _upcomingAppointments = upcomingAppointments.map((a) => a as Appointment).toList();
+
+      // Load pending appointments
+      final pendingAppointments = await _databaseProvider.getClinicAppointments(_currentClinic!.id!);
+      _pendingAppointments = pendingAppointments
+          .map((a) => a as Appointment)
+          .where((apt) => apt.status == AppointmentStatus.pending)
+          .toList();
+
+      // Load clinic staff
+      _staff = await _databaseProvider.getClinicStaff(_currentClinic!.id!);
+
+      // Load patients (recent)
+      final pets = await _databaseProvider.getUserPets();
+      _patients = pets.map((p) => p as Pet).take(20).toList();
+
+      // Load recent medical records
+      final medicalRecords = await _databaseProvider.getClinicMedicalRecords(_currentClinic!.id!, limit: 10);
+      _recentMedicalRecords = medicalRecords.map((r) => r as MedicalRecord).toList();
+
+      // Load today's billing
+      final todayBilling = await _databaseProvider.getClinicInvoices(
+        _currentClinic!.id!,
+        startDate: DateTime.now(),
+        endDate: DateTime.now(),
+      );
+      _todayBilling = todayBilling.map((b) => b as Billing).toList();
+      _calculateTodayRevenue();
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('Error loading clinic data: $e');
+    }
+  }
+
+  // Appointment management methods
+  Future<bool> createAppointment(Appointment appointment) async {
+    try {
+      await _databaseProvider.createAppointment(appointment);
+      debugPrint('Appointment created successfully');
+      // Refresh data to show the new appointment
+      loadClinicData();
+      return true;
+    } catch (e) {
+      debugPrint('Failed to create appointment: $e');
+      return false;
+    }
+  }
+
+  Future<bool> updateAppointmentStatus(String appointmentId, AppointmentStatus status) async {
+    try {
+      await _databaseProvider.updateAppointmentStatus(appointmentId, status.value);
+      // Update local state immediately for better UX
+      _updateAppointmentInList(_todayAppointments, appointmentId, status);
+      _updateAppointmentInList(_upcomingAppointments, appointmentId, status);
+      _updateAppointmentInList(_pendingAppointments, appointmentId, status);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Failed to update appointment status: $e');
+      return false;
+    }
+  }
+
+  Future<bool> cancelAppointment(String appointmentId, {String? reason}) async {
+    try {
+      await _databaseProvider.cancelAppointment(appointmentId, reason: reason);
+      // Update local state
+      _updateAppointmentInList(_todayAppointments, appointmentId, AppointmentStatus.cancelled);
+      _updateAppointmentInList(_upcomingAppointments, appointmentId, AppointmentStatus.cancelled);
+      _updateAppointmentInList(_pendingAppointments, appointmentId, AppointmentStatus.cancelled);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Failed to cancel appointment: $e');
+      return false;
+    }
   }
 
   // Refresh data

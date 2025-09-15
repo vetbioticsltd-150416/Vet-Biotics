@@ -8,6 +8,11 @@ scripts:
   bootstrap: melos bootstrap
   clean: melos clean
   format: melos run format
+  format:fix: melos exec -- dart format --fix .
+  fix: melos run fix
+  fix:all: |
+    melos run format:fix
+    melos run fix
   analyze: melos run analyze
   test: melos run test
   build: melos run build
@@ -31,10 +36,6 @@ scripts:
   run:app_clinic: cd packages/app_clinic && flutter run
   run:app_admin: cd packages/app_admin && flutter run
 
-  # Firebase scripts
-  firebase:init: firebase init
-  firebase:deploy:rules: firebase deploy --only firestore:rules,storage
-  firebase:emulators: firebase emulators:start
 
   # Development scripts
   dev:clean: |

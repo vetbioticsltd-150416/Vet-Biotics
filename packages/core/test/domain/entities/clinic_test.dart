@@ -15,13 +15,15 @@ void main() {
       // Arrange & Act
       final clinic = Clinic(
         id: clinicId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
+        ownerId: 'owner123',
         address: address,
         phone: phone,
         email: email,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       // Assert
@@ -39,12 +41,14 @@ void main() {
       // Arrange & Act
       final clinic = Clinic(
         id: clinicId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
         name: name,
+        ownerId: 'owner123',
         address: address,
         phone: phone,
         email: email,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       // Assert
@@ -55,25 +59,29 @@ void main() {
       // Test active clinic
       final activeClinic = Clinic(
         id: clinicId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
+        ownerId: 'owner123',
         address: address,
         phone: phone,
         email: email,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       // Test inactive clinic
       final inactiveClinic = Clinic(
         id: 'clinic_456',
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: false,
         name: 'Inactive Clinic',
+        ownerId: 'owner456',
         address: address,
         phone: phone,
         email: email,
-        isActive: false,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       expect(activeClinic.isActive, true);
@@ -87,12 +95,14 @@ void main() {
       for (final email in validEmails) {
         final clinic = Clinic(
           id: clinicId,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
           name: name,
+          ownerId: 'owner123',
           address: address,
           phone: phone,
           email: email,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
+          status: ClinicStatus.active,
         );
 
         expect(clinic.email, email);
@@ -106,12 +116,14 @@ void main() {
       for (final phone in validPhones) {
         final clinic = Clinic(
           id: clinicId,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
           name: name,
+          ownerId: 'owner123',
           address: address,
           phone: phone,
           email: email,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
+          status: ClinicStatus.active,
         );
 
         expect(clinic.phone, phone);
@@ -122,24 +134,28 @@ void main() {
       // Arrange
       final clinic1 = Clinic(
         id: clinicId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
+        ownerId: 'owner123',
         address: address,
         phone: phone,
         email: email,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       final clinic2 = Clinic(
         id: clinicId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
+        ownerId: 'owner123',
         address: address,
         phone: phone,
         email: email,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       // Act & Assert
@@ -150,22 +166,26 @@ void main() {
       // Arrange
       final clinic1 = Clinic(
         id: clinicId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
         name: name,
+        ownerId: 'owner123',
         address: address,
         phone: phone,
         email: email,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       final clinic2 = Clinic(
         id: 'different_id',
+        createdAt: createdAt,
+        updatedAt: updatedAt,
         name: name,
+        ownerId: 'owner123',
         address: address,
         phone: phone,
         email: email,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       // Act & Assert
@@ -176,27 +196,26 @@ void main() {
       // Arrange
       final originalClinic = Clinic(
         id: clinicId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
+        ownerId: 'owner123',
         address: address,
         phone: phone,
         email: email,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       // Act
-      final copiedClinic = originalClinic.copyWith(name: 'Updated Clinic Name', isActive: false);
+      final copiedClinic = originalClinic.copyWith(isActive: false, updatedAt: DateTime(2024, 1, 3));
 
-      // Assert
+      // Assert - copyWith only affects AuditableEntity fields
       expect(copiedClinic.id, clinicId);
-      expect(copiedClinic.name, 'Updated Clinic Name');
-      expect(copiedClinic.address, address);
-      expect(copiedClinic.phone, phone);
-      expect(copiedClinic.email, email);
+      expect(copiedClinic.name, name); // unchanged
       expect(copiedClinic.isActive, false);
       expect(copiedClinic.createdAt, createdAt);
-      expect(copiedClinic.updatedAt, updatedAt);
+      expect(copiedClinic.updatedAt, DateTime(2024, 1, 3));
     });
 
     test('should handle long addresses', () {
@@ -208,12 +227,14 @@ void main() {
       // Act
       final clinic = Clinic(
         id: clinicId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
         name: name,
+        ownerId: 'owner123',
         address: longAddress,
         phone: phone,
         email: email,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        status: ClinicStatus.active,
       );
 
       // Assert

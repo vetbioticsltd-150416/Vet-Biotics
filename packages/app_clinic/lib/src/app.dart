@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -6,19 +5,14 @@ import 'package:vet_biotics_auth/auth.dart';
 import 'package:vet_biotics_router/router.dart';
 import 'package:vet_biotics_shared/shared.dart';
 
-import '../firebase_options.dart';
 import 'providers/app_clinic_provider.dart';
 
 class AppClinic extends StatelessWidget {
   const AppClinic({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<dynamic>>(
-      future: Future.wait([
-        SharedPreferences.getInstance(),
-        Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform),
-      ]),
+  Widget build(BuildContext context) => FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const MaterialApp(
@@ -45,7 +39,7 @@ class AppClinic extends StatelessWidget {
           );
         }
 
-        final sharedPreferences = snapshot.data![0] as SharedPreferences;
+        var sharedPreferences = snapshot.data!;
 
         return MultiProvider(
           providers: [
@@ -64,5 +58,4 @@ class AppClinic extends StatelessWidget {
         );
       },
     );
-  }
 }

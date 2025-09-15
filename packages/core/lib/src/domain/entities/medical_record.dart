@@ -1,4 +1,4 @@
-import 'package:core/src/domain/entities/base_entity.dart';
+import 'base_entity.dart';
 
 /// Medical record type
 enum MedicalRecordType {
@@ -15,12 +15,8 @@ enum MedicalRecordType {
   final String value;
   final String displayName;
 
-  static MedicalRecordType fromString(String value) {
-    return MedicalRecordType.values.firstWhere(
-      (type) => type.value == value,
-      orElse: () => MedicalRecordType.consultation,
-    );
-  }
+  static MedicalRecordType fromString(String value) =>
+      MedicalRecordType.values.firstWhere((type) => type.value == value, orElse: () => MedicalRecordType.consultation);
 }
 
 /// Medical record entity
@@ -43,10 +39,10 @@ class MedicalRecord extends AuditableEntity {
   final DateTime? followUpDate;
   final Map<String, dynamic>? metadata;
 
-  const MedicalRecord({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  MedicalRecord({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.petId,
     required this.appointmentId,
@@ -65,7 +61,7 @@ class MedicalRecord extends AuditableEntity {
     this.vitalSigns,
     this.followUpDate,
     this.metadata,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now());
 
   @override
   List<Object?> get props => [
@@ -90,9 +86,7 @@ class MedicalRecord extends AuditableEntity {
   ];
 
   @override
-  bool get isValid {
-    return super.isValid && petId.isNotEmpty && appointmentId.isNotEmpty && doctorId.isNotEmpty && clinicId.isNotEmpty;
-  }
+  bool get isValid => petId.isNotEmpty && appointmentId.isNotEmpty && doctorId.isNotEmpty && clinicId.isNotEmpty;
 
   @override
   List<String> get validationErrors {
@@ -110,6 +104,7 @@ class MedicalRecord extends AuditableEntity {
     return errors;
   }
 
+  @override
   MedicalRecord copyWith({
     String? id,
     String? petId,
@@ -132,31 +127,52 @@ class MedicalRecord extends AuditableEntity {
     DateTime? updatedAt,
     bool? isActive,
     Map<String, dynamic>? metadata,
-  }) {
-    return MedicalRecord(
-      id: id ?? this.id,
-      petId: petId ?? this.petId,
-      appointmentId: appointmentId ?? this.appointmentId,
-      doctorId: doctorId ?? this.doctorId,
-      clinicId: clinicId ?? this.clinicId,
-      type: type ?? this.type,
-      recordDate: recordDate ?? this.recordDate,
-      symptoms: symptoms ?? this.symptoms,
-      diagnosis: diagnosis ?? this.diagnosis,
-      treatment: treatment ?? this.treatment,
-      notes: notes ?? this.notes,
-      medications: medications ?? this.medications,
-      attachments: attachments ?? this.attachments,
-      weight: weight ?? this.weight,
-      temperature: temperature ?? this.temperature,
-      vitalSigns: vitalSigns ?? this.vitalSigns,
-      followUpDate: followUpDate ?? this.followUpDate,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: createdAt ?? this.updatedAt,
-      isActive: isActive ?? this.isActive,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+  }) => MedicalRecord(
+    id: id ?? this.id,
+    petId: petId ?? this.petId,
+    appointmentId: appointmentId ?? this.appointmentId,
+    doctorId: doctorId ?? this.doctorId,
+    clinicId: clinicId ?? this.clinicId,
+    type: type ?? this.type,
+    recordDate: recordDate ?? this.recordDate,
+    symptoms: symptoms ?? this.symptoms,
+    diagnosis: diagnosis ?? this.diagnosis,
+    treatment: treatment ?? this.treatment,
+    notes: notes ?? this.notes,
+    medications: medications ?? this.medications,
+    attachments: attachments ?? this.attachments,
+    weight: weight ?? this.weight,
+    temperature: temperature ?? this.temperature,
+    vitalSigns: vitalSigns ?? this.vitalSigns,
+    followUpDate: followUpDate ?? this.followUpDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: createdAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    metadata: metadata ?? this.metadata,
+  );
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'isActive': isActive,
+    'petId': petId,
+    'appointmentId': appointmentId,
+    'doctorId': doctorId,
+    'clinicId': clinicId,
+    'recordDate': recordDate.toIso8601String(),
+    'type': type.value,
+    'symptoms': symptoms,
+    'diagnosis': diagnosis,
+    'treatment': treatment,
+    'medications': medications,
+    'notes': notes,
+    'vitalSigns': vitalSigns,
+    'attachments': attachments,
+    'followUpDate': followUpDate?.toIso8601String(),
+    'metadata': metadata,
+  };
 }
 
 /// Prescription entity
@@ -167,12 +183,13 @@ class Prescription extends AuditableEntity {
   final List<PrescriptionItem> items;
   final String? instructions;
   final DateTime? validUntil;
+  @override
   final bool isActive;
 
-  const Prescription({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  Prescription({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.medicalRecordId,
     required this.petId,
@@ -180,8 +197,8 @@ class Prescription extends AuditableEntity {
     required this.items,
     this.instructions,
     this.validUntil,
-    this.isActive = true,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now()),
+       isActive = isActive;
 
   @override
   List<Object?> get props => [
@@ -196,6 +213,20 @@ class Prescription extends AuditableEntity {
   ];
 
   bool get isExpired => validUntil?.isBefore(DateTime.now()) ?? false;
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'isActive': isActive,
+    'medicalRecordId': medicalRecordId,
+    'petId': petId,
+    'doctorId': doctorId,
+    'items': items.map((item) => item.toJson()).toList(),
+    'instructions': instructions,
+    'validUntil': validUntil?.toIso8601String(),
+  };
 }
 
 /// Prescription item
@@ -216,27 +247,23 @@ class PrescriptionItem {
     this.instructions,
   });
 
-  factory PrescriptionItem.fromJson(Map<String, dynamic> json) {
-    return PrescriptionItem(
-      medicationId: json['medicationId'] as String,
-      medicationName: json['medicationName'] as String,
-      dosage: json['dosage'] as String,
-      frequency: json['frequency'] as String,
-      duration: json['duration'] as int,
-      instructions: json['instructions'] as String?,
-    );
-  }
+  factory PrescriptionItem.fromJson(Map<String, dynamic> json) => PrescriptionItem(
+    medicationId: json['medicationId'] as String,
+    medicationName: json['medicationName'] as String,
+    dosage: json['dosage'] as String,
+    frequency: json['frequency'] as String,
+    duration: json['duration'] as int,
+    instructions: json['instructions'] as String?,
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'medicationId': medicationId,
-      'medicationName': medicationName,
-      'dosage': dosage,
-      'frequency': frequency,
-      'duration': duration,
-      'instructions': instructions,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'medicationId': medicationId,
+    'medicationName': medicationName,
+    'dosage': dosage,
+    'frequency': frequency,
+    'duration': duration,
+    'instructions': instructions,
+  };
 }
 
 /// Vaccination record
@@ -250,10 +277,10 @@ class VaccinationRecord extends AuditableEntity {
   final String? administeredBy;
   final String? notes;
 
-  const VaccinationRecord({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  VaccinationRecord({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.petId,
     required this.vaccineId,
@@ -263,7 +290,7 @@ class VaccinationRecord extends AuditableEntity {
     this.batchNumber,
     this.administeredBy,
     this.notes,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now());
 
   @override
   List<Object?> get props => [
@@ -279,4 +306,20 @@ class VaccinationRecord extends AuditableEntity {
   ];
 
   bool get isOverdue => nextDueDate?.isBefore(DateTime.now()) ?? false;
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'isActive': isActive,
+    'petId': petId,
+    'vaccineId': vaccineId,
+    'vaccineName': vaccineName,
+    'vaccinationDate': vaccinationDate.toIso8601String(),
+    'nextDueDate': nextDueDate?.toIso8601String(),
+    'batchNumber': batchNumber,
+    'administeredBy': administeredBy,
+    'notes': notes,
+  };
 }

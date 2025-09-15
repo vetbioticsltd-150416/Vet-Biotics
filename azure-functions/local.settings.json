@@ -1,0 +1,37 @@
+{
+    "IsEncrypted": false,
+    "Values": {
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+        "FUNCTIONS_WORKER_RUNTIME": "node",
+        "FUNCTIONS_WORKER_RUNTIME_VERSION": "~18",
+        // Azure Cosmos DB
+        "COSMOS_DB_ENDPOINT": "https://vetbiotics-cosmos.documents.azure.com:443/",
+        "COSMOS_DB_KEY": "your-cosmos-db-key",
+        "COSMOS_DB_DATABASE": "vetbiotics-prod-db",
+        // Azure Blob Storage
+        "AZURE_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=vetbioticsstorage;AccountKey=your-storage-key;EndpointSuffix=core.windows.net",
+        "PET_PHOTOS_CONTAINER": "pet-photos",
+        "MEDICAL_DOCS_CONTAINER": "medical-docs",
+        // Azure Notification Hubs
+        "NOTIFICATION_HUB_CONNECTION_STRING": "your-notification-hub-connection-string",
+        "NOTIFICATION_HUB_NAME": "vetbiotics-notifications",
+        // Azure AD B2C
+        "AZURE_AD_B2C_TENANT_ID": "vetbiotics.onmicrosoft.com",
+        "AZURE_AD_B2C_CLIENT_ID": "your-b2c-client-id",
+        "AZURE_AD_B2C_CLIENT_SECRET": "your-b2c-client-secret",
+        "AZURE_AD_B2C_POLICY_NAME": "B2C_1_SignUpSignIn",
+        // Email service (SendGrid, Azure Communication Services, etc.)
+        "EMAIL_CONNECTION_STRING": "your-email-service-connection",
+        "EMAIL_FROM_ADDRESS": "noreply@vetbiotics.com",
+        // Stripe for payments
+        "STRIPE_SECRET_KEY": "sk_test_your-stripe-secret-key",
+        "STRIPE_WEBHOOK_SECRET": "whsec_your-webhook-secret",
+        // JWT settings
+        "JWT_SECRET": "your-jwt-secret-key",
+        "JWT_EXPIRE_TIME": "24h",
+        // Application settings
+        "ENVIRONMENT": "development",
+        "LOG_LEVEL": "debug"
+    },
+    "ConnectionStrings": {}
+}

@@ -1,107 +1,154 @@
 import 'package:flutter/material.dart';
+import 'package:vet_biotics_auth/auth.dart';
 import 'package:vet_biotics_core/core.dart';
 
 class AppAdminProvider extends ChangeNotifier {
+  final DatabaseProvider _databaseProvider;
+
+  AppAdminProvider({DatabaseProvider? databaseProvider})
+      : _databaseProvider = databaseProvider ?? DatabaseProvider() {
   // Navigation
-  int _currentIndex = 0;
-  int get currentIndex => _currentIndex;
+  int currentIndex = 0;
+  int get int currentIndex => currentIndex;
 
   void setCurrentIndex(int index) {
-    _currentIndex = index;
+    currentIndex = index;
     notifyListeners();
   }
 
   // Loading states
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+  bool isLoading = false;
+  bool get bool isLoading => isLoading;
 
   void setLoading(bool loading) {
-    _isLoading = loading;
+    isLoading = loading;
     notifyListeners();
   }
 
   // Dashboard Data
-  int _totalClinics = 0;
-  int _totalUsers = 0;
-  int _totalAppointments = 0;
-  double _totalRevenue = 0.0;
+  int totalClinics = 0;
+  int totalUsers = 0;
+  int totalAppointments = 0;
+  double totalRevenue = 0;
 
-  int get totalClinics => _totalClinics;
-  int get totalUsers => _totalUsers;
-  int get totalAppointments => _totalAppointments;
-  double get totalRevenue => _totalRevenue;
+  int get int totalClinics => totalClinics;
+  int get int totalUsers => totalUsers;
+  int get int totalAppointments => totalAppointments;
+  double get double totalRevenue => totalRevenue;
 
   // Clinics Management
-  List<Clinic> _clinics = [];
-  List<Clinic> get clinics => _clinics;
+  List<Clinic> clinics = [];
+  List<Clinic> get List<Clinic> clinics => clinics;
 
   void setClinics(List<Clinic> clinics) {
-    _clinics = clinics;
+    clinics = clinics;
     notifyListeners();
   }
 
   void addClinic(Clinic clinic) {
-    _clinics.add(clinic);
-    _totalClinics = _clinics.length;
+    clinics.add(clinic);
+    totalClinics = clinics.length;
     notifyListeners();
   }
 
   void updateClinic(Clinic updatedClinic) {
-    final index = _clinics.indexWhere((clinic) => clinic.id == updatedClinic.id);
+    final index = clinics.indexWhere((clinic) => clinic.id == updatedClinic.id);
     if (index != -1) {
-      _clinics[index] = updatedClinic;
+      clinics[index] = updatedClinic;
       notifyListeners();
     }
   }
 
   void removeClinic(String clinicId) {
-    _clinics.removeWhere((clinic) => clinic.id == clinicId);
-    _totalClinics = _clinics.length;
+    clinics.removeWhere((clinic) => clinic.id == clinicId);
+    totalClinics = clinics.length;
     notifyListeners();
   }
 
   // Users Management
-  List<User> _users = [];
-  List<User> get users => _users;
+  List<User> users = [];
+  List<User> get List<User> users => users;
 
   void setUsers(List<User> users) {
-    _users = users;
+    users = users;
     notifyListeners();
   }
 
   void addUser(User user) {
-    _users.add(user);
-    _totalUsers = _users.length;
+    users.add(user);
+    totalUsers = users.length;
     notifyListeners();
   }
 
   void updateUser(User updatedUser) {
-    final index = _users.indexWhere((user) => user.id == updatedUser.id);
+    final index = users.indexWhere((user) => user.id == updatedUser.id);
     if (index != -1) {
-      _users[index] = updatedUser;
+      users[index] = updatedUser;
       notifyListeners();
     }
   }
 
   void removeUser(String userId) {
-    _users.removeWhere((user) => user.id == userId);
-    _totalUsers = _users.length;
+    users.removeWhere((user) => user.id == userId);
+    totalUsers = users.length;
     notifyListeners();
   }
 
   // Analytics Data
-  Map<String, dynamic> _analyticsData = {};
-  Map<String, dynamic> get analyticsData => _analyticsData;
+  Map<String, dynamic> analyticsData = {};
+  Map<String, dynamic> get Map<String, dynamic> analyticsData => analyticsData;
 
   void setAnalyticsData(Map<String, dynamic> data) {
-    _analyticsData = data;
+    analyticsData = data;
     notifyListeners();
   }
 
-  // Mock Data for Development
+  // Load real data from Firebase
+  Future<void> loadData() async {
+    try {
+      setLoading(true);
+
+      // Load clinics
+      var clinics = await _databaseProvider.getAllClinics();
+      clinics = clinics.map((c) => c as Clinic).toList();
+
+      // Load users
+      var users = await _databaseProvider.getAllUsers(limit: 100);
+      users = users.map((u) => u as User).toList();
+
+      // Update totals
+      totalClinics = clinics.length;
+      totalUsers = users.length;
+
+      // Load analytics data
+      await loadAnalyticsData();
+
+      setLoading(false);
+    } catch (e) {
+      debugPrint('Error loading admin data: $e');
+      setLoading(false);
+      // Fallback to mock data if Firebase fails
+      loadMockData();
+    }
+  }
+
+  Future<void> loadAnalyticsData() async {
+    try {
+      final statistics = await _databaseProvider.getUserStatistics();
+      analyticsData = statistics;
+
+      // Calculate total appointments and revenue from statistics
+      totalAppointments = statistics['totalAppointments'] ?? 0;
+      totalRevenue = statistics['totalRevenue'] ?? 0.0;
+    } catch (e) {
+      debugPrint('Error loading analytics: $e');
+    }
+  }
+
+  // Mock Data for Development (fallback)
   void loadMockData() {
     // Mock Clinics
-    _clinics = [
+    clinics = [
       Clinic(
         id: 'clinic_1',
         name: 'Central Pet Clinic',
@@ -135,7 +182,7 @@ class AppAdminProvider extends ChangeNotifier {
     ];
 
     // Mock Users
-    _users = [
+    users = [
       User(
         id: 'user_1',
         email: 'admin@vetbiotics.com',
@@ -193,13 +240,13 @@ class AppAdminProvider extends ChangeNotifier {
     ];
 
     // Update totals
-    _totalClinics = _clinics.length;
-    _totalUsers = _users.length;
-    _totalAppointments = 1250; // Mock data
-    _totalRevenue = 250000.0; // Mock data
+    totalClinics = clinics.length;
+    totalUsers = users.length;
+    totalAppointments = 1250; // Mock data
+    totalRevenue = 250000.0; // Mock data
 
     // Mock Analytics Data
-    _analyticsData = {
+    analyticsData = {
       'monthlyRevenue': [
         {'month': 'Jan', 'revenue': 18500.0},
         {'month': 'Feb', 'revenue': 22000.0},
@@ -226,8 +273,8 @@ class AppAdminProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Initialize with mock data
-  AppAdminProvider() {
-    loadMockData();
+  // Initialize with real data (fallback to mock if needed)
+  void AppAdminProvider() {
+    loadData();
   }
 }

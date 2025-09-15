@@ -32,12 +32,6 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0
 
-  # Firebase
-  firebase_core: ^2.24.2
-  cloud_firestore: ^4.14.0
-  firebase_auth: ^4.16.0
-  firebase_storage: ^11.5.6
-
   # Utilities
   uuid: ^4.2.1
   equatable: ^2.0.5
@@ -66,3 +60,10 @@ flutter:
 
   # Generate files
   generate: true
+
+scripts:
+  format: dart format .
+  format:fix: dart format --fix .
+  fix: dart fix --apply
+  analyze: flutter analyze
+  test: flutter test

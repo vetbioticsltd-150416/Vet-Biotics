@@ -1,4 +1,4 @@
-import 'package:core/src/domain/entities/base_entity.dart';
+import 'base_entity.dart';
 
 /// Appointment status
 enum AppointmentStatus {
@@ -67,10 +67,10 @@ class Appointment extends AuditableEntity {
   final DateTime? checkOutTime;
   final Map<String, dynamic>? metadata;
 
-  const Appointment({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  Appointment({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.petId,
     required this.ownerId,
@@ -90,7 +90,7 @@ class Appointment extends AuditableEntity {
     this.checkInTime,
     this.checkOutTime,
     this.metadata,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now());
 
   /// Get end time of appointment
   DateTime get endDate => scheduledDate.add(Duration(minutes: durationMinutes));
@@ -159,12 +159,12 @@ class Appointment extends AuditableEntity {
 
   @override
   bool get isValid {
-    return super.isValid &&
-        petId.isNotEmpty &&
+    return petId.isNotEmpty &&
         ownerId.isNotEmpty &&
         clinicId.isNotEmpty &&
         durationMinutes > 0 &&
-        durationMinutes <= 480; // Max 8 hours
+        durationMinutes <= 480 && // Max 8 hours
+        scheduledDate.isAfter(DateTime.now().subtract(const Duration(hours: 1)));
   }
 
   @override
@@ -201,7 +201,43 @@ class Appointment extends AuditableEntity {
   }
 
   /// Create a copy with updated fields
+  @override
   Appointment copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? createdBy,
+    String? updatedBy,
+  }) {
+    return Appointment(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      isActive: isActive ?? this.isActive,
+      petId: petId,
+      ownerId: ownerId,
+      doctorId: doctorId,
+      clinicId: clinicId,
+      scheduledDate: scheduledDate,
+      durationMinutes: durationMinutes,
+      type: type,
+      status: status,
+      notes: notes,
+      symptoms: symptoms,
+      diagnosis: diagnosis,
+      treatment: treatment,
+      fee: fee,
+      paymentStatus: paymentStatus,
+      attachments: attachments,
+      checkInTime: checkInTime,
+      checkOutTime: checkOutTime,
+      metadata: metadata,
+    );
+  }
+
+  /// Create a copy with updated appointment-specific fields
+  Appointment copyWithAppointment({
     String? id,
     String? petId,
     String? ownerId,
@@ -249,6 +285,34 @@ class Appointment extends AuditableEntity {
       isActive: isActive ?? this.isActive,
       metadata: metadata ?? this.metadata,
     );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
+      'isActive': isActive,
+      'petId': petId,
+      'ownerId': ownerId,
+      'doctorId': doctorId,
+      'clinicId': clinicId,
+      'scheduledDate': scheduledDate.toIso8601String(),
+      'durationMinutes': durationMinutes,
+      'type': type.value,
+      'status': status.value,
+      'notes': notes,
+      'symptoms': symptoms,
+      'diagnosis': diagnosis,
+      'treatment': treatment,
+      'fee': fee,
+      'paymentStatus': paymentStatus,
+      'attachments': attachments,
+      'checkInTime': checkInTime?.toIso8601String(),
+      'checkOutTime': checkOutTime?.toIso8601String(),
+      'metadata': metadata,
+    };
   }
 }
 

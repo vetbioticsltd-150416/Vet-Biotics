@@ -1,4 +1,4 @@
-import 'package:core/src/domain/entities/base_entity.dart';
+import 'base_entity.dart';
 
 /// Invoice status
 enum InvoiceStatus {
@@ -12,9 +12,8 @@ enum InvoiceStatus {
   final String value;
   final String displayName;
 
-  static InvoiceStatus fromString(String value) {
-    return InvoiceStatus.values.firstWhere((status) => status.value == value, orElse: () => InvoiceStatus.draft);
-  }
+  static InvoiceStatus fromString(String value) =>
+      InvoiceStatus.values.firstWhere((status) => status.value == value, orElse: () => InvoiceStatus.draft);
 
   bool get isDraft => this == InvoiceStatus.draft;
   bool get isSent => this == InvoiceStatus.sent;
@@ -36,9 +35,8 @@ enum PaymentMethod {
   final String value;
   final String displayName;
 
-  static PaymentMethod fromString(String value) {
-    return PaymentMethod.values.firstWhere((method) => method.value == value, orElse: () => PaymentMethod.cash);
-  }
+  static PaymentMethod fromString(String value) =>
+      PaymentMethod.values.firstWhere((method) => method.value == value, orElse: () => PaymentMethod.cash);
 }
 
 /// Invoice entity
@@ -60,10 +58,10 @@ class Invoice extends AuditableEntity {
   final String? notes;
   final Map<String, dynamic>? metadata;
 
-  const Invoice({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  Invoice({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.invoiceNumber,
     required this.clinicId,
@@ -81,7 +79,7 @@ class Invoice extends AuditableEntity {
     required this.totalAmount,
     this.notes,
     this.metadata,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now());
 
   @override
   List<Object?> get props => [
@@ -105,15 +103,13 @@ class Invoice extends AuditableEntity {
   ];
 
   @override
-  bool get isValid {
-    return super.isValid &&
-        invoiceNumber.isNotEmpty &&
-        clinicId.isNotEmpty &&
-        customerId.isNotEmpty &&
-        items.isNotEmpty &&
-        subtotal >= 0 &&
-        totalAmount >= 0;
-  }
+  bool get isValid =>
+      invoiceNumber.isNotEmpty &&
+      clinicId.isNotEmpty &&
+      customerId.isNotEmpty &&
+      items.isNotEmpty &&
+      subtotal >= 0 &&
+      totalAmount >= 0;
 
   @override
   List<String> get validationErrors {
@@ -150,51 +146,60 @@ class Invoice extends AuditableEntity {
     return errors;
   }
 
+  @override
   Invoice copyWith({
     String? id,
-    String? invoiceNumber,
-    String? clinicId,
-    String? customerId,
-    String? petId,
-    String? appointmentId,
-    InvoiceStatus? status,
-    DateTime? issueDate,
-    DateTime? dueDate,
-    List<InvoiceItem>? items,
-    double? subtotal,
-    double? taxRate,
-    double? taxAmount,
-    double? discountAmount,
-    double? totalAmount,
-    String? notes,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
-    Map<String, dynamic>? metadata,
-  }) {
-    return Invoice(
-      id: id ?? this.id,
-      invoiceNumber: invoiceNumber ?? this.invoiceNumber,
-      clinicId: clinicId ?? this.clinicId,
-      customerId: customerId ?? this.customerId,
-      petId: petId ?? this.petId,
-      appointmentId: appointmentId ?? this.appointmentId,
-      status: status ?? this.status,
-      issueDate: issueDate ?? this.issueDate,
-      dueDate: dueDate ?? this.dueDate,
-      items: items ?? this.items,
-      subtotal: subtotal ?? this.subtotal,
-      taxRate: taxRate ?? this.taxRate,
-      taxAmount: taxAmount ?? this.taxAmount,
-      discountAmount: discountAmount ?? this.discountAmount,
-      totalAmount: totalAmount ?? this.totalAmount,
-      notes: notes ?? this.notes,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      isActive: isActive ?? this.isActive,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+    String? createdBy,
+    String? updatedBy,
+  }) => Invoice(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    invoiceNumber: invoiceNumber,
+    clinicId: clinicId,
+    customerId: customerId,
+    petId: petId,
+    appointmentId: appointmentId,
+    status: status,
+    issueDate: issueDate,
+    dueDate: dueDate,
+    items: items,
+    subtotal: subtotal,
+    taxRate: taxRate,
+    taxAmount: taxAmount,
+    discountAmount: discountAmount,
+    totalAmount: totalAmount,
+    notes: notes,
+    metadata: metadata,
+  );
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'isActive': isActive,
+    'invoiceNumber': invoiceNumber,
+    'clinicId': clinicId,
+    'customerId': customerId,
+    'petId': petId,
+    'appointmentId': appointmentId,
+    'status': status.value,
+    'issueDate': issueDate.toIso8601String(),
+    'dueDate': dueDate?.toIso8601String(),
+    'items': items.map((item) => item.toJson()).toList(),
+    'subtotal': subtotal,
+    'taxRate': taxRate,
+    'taxAmount': taxAmount,
+    'discountAmount': discountAmount,
+    'totalAmount': totalAmount,
+    'notes': notes,
+    'metadata': metadata,
+  };
 
   /// Calculate totals from items
   static Map<String, double> calculateTotals(List<InvoiceItem> items, double taxRate, double discountAmount) {
@@ -240,29 +245,25 @@ class InvoiceItem {
     this.metadata,
   });
 
-  factory InvoiceItem.fromJson(Map<String, dynamic> json) {
-    return InvoiceItem(
-      serviceId: json['serviceId'] as String,
-      serviceName: json['serviceName'] as String,
-      description: json['description'] as String? ?? '',
-      quantity: json['quantity'] as int? ?? 1,
-      unitPrice: (json['unitPrice'] as num).toDouble(),
-      totalPrice: (json['totalPrice'] as num).toDouble(),
-      metadata: json['metadata'] as Map<String, dynamic>?,
-    );
-  }
+  factory InvoiceItem.fromJson(Map<String, dynamic> json) => InvoiceItem(
+    serviceId: json['serviceId'] as String,
+    serviceName: json['serviceName'] as String,
+    description: json['description'] as String? ?? '',
+    quantity: json['quantity'] as int? ?? 1,
+    unitPrice: (json['unitPrice'] as num).toDouble(),
+    totalPrice: (json['totalPrice'] as num).toDouble(),
+    metadata: json['metadata'] as Map<String, dynamic>?,
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'serviceId': serviceId,
-      'serviceName': serviceName,
-      'description': description,
-      'quantity': quantity,
-      'unitPrice': unitPrice,
-      'totalPrice': totalPrice,
-      'metadata': metadata,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'serviceId': serviceId,
+    'serviceName': serviceName,
+    'description': description,
+    'quantity': quantity,
+    'unitPrice': unitPrice,
+    'totalPrice': totalPrice,
+    'metadata': metadata,
+  };
 
   InvoiceItem copyWith({
     String? serviceId,
@@ -272,17 +273,15 @@ class InvoiceItem {
     double? unitPrice,
     double? totalPrice,
     Map<String, dynamic>? metadata,
-  }) {
-    return InvoiceItem(
-      serviceId: serviceId ?? this.serviceId,
-      serviceName: serviceName ?? this.serviceName,
-      description: description ?? this.description,
-      quantity: quantity ?? this.quantity,
-      unitPrice: unitPrice ?? this.unitPrice,
-      totalPrice: totalPrice ?? this.totalPrice,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+  }) => InvoiceItem(
+    serviceId: serviceId ?? this.serviceId,
+    serviceName: serviceName ?? this.serviceName,
+    description: description ?? this.description,
+    quantity: quantity ?? this.quantity,
+    unitPrice: unitPrice ?? this.unitPrice,
+    totalPrice: totalPrice ?? this.totalPrice,
+    metadata: metadata ?? this.metadata,
+  );
 }
 
 /// Payment entity
@@ -299,10 +298,10 @@ class Payment extends AuditableEntity {
   final Map<String, dynamic>? paymentDetails;
   final Map<String, dynamic>? metadata;
 
-  const Payment({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  Payment({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.invoiceId,
     required this.customerId,
@@ -315,7 +314,7 @@ class Payment extends AuditableEntity {
     this.notes,
     this.paymentDetails,
     this.metadata,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now());
 
   @override
   List<Object?> get props => [
@@ -334,9 +333,7 @@ class Payment extends AuditableEntity {
   ];
 
   @override
-  bool get isValid {
-    return super.isValid && invoiceId.isNotEmpty && customerId.isNotEmpty && amount > 0;
-  }
+  bool get isValid => invoiceId.isNotEmpty && customerId.isNotEmpty && amount > 0;
 
   @override
   List<String> get validationErrors {
@@ -357,41 +354,50 @@ class Payment extends AuditableEntity {
     return errors;
   }
 
+  @override
   Payment copyWith({
     String? id,
-    String? invoiceId,
-    String? customerId,
-    double? amount,
-    PaymentMethod? method,
-    PaymentStatus? status,
-    DateTime? paymentDate,
-    String? transactionId,
-    String? referenceNumber,
-    String? notes,
-    Map<String, dynamic>? paymentDetails,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
-    Map<String, dynamic>? metadata,
-  }) {
-    return Payment(
-      id: id ?? this.id,
-      invoiceId: invoiceId ?? this.invoiceId,
-      customerId: customerId ?? this.customerId,
-      amount: amount ?? this.amount,
-      method: method ?? this.method,
-      status: status ?? this.status,
-      paymentDate: paymentDate ?? this.paymentDate,
-      transactionId: transactionId ?? this.transactionId,
-      referenceNumber: referenceNumber ?? this.referenceNumber,
-      notes: notes ?? this.notes,
-      paymentDetails: paymentDetails ?? this.paymentDetails,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      isActive: isActive ?? this.isActive,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+    String? createdBy,
+    String? updatedBy,
+  }) => Payment(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    invoiceId: invoiceId,
+    customerId: customerId,
+    amount: amount,
+    method: method,
+    status: status,
+    paymentDate: paymentDate,
+    transactionId: transactionId,
+    referenceNumber: referenceNumber,
+    notes: notes,
+    paymentDetails: paymentDetails,
+    metadata: metadata,
+  );
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'isActive': isActive,
+    'invoiceId': invoiceId,
+    'customerId': customerId,
+    'amount': amount,
+    'method': method.value,
+    'status': status.value,
+    'paymentDate': paymentDate?.toIso8601String(),
+    'transactionId': transactionId,
+    'referenceNumber': referenceNumber,
+    'notes': notes,
+    'paymentDetails': paymentDetails,
+    'metadata': metadata,
+  };
 }
 
 /// Payment status
@@ -407,9 +413,8 @@ enum PaymentStatus {
   final String value;
   final String displayName;
 
-  static PaymentStatus fromString(String value) {
-    return PaymentStatus.values.firstWhere((status) => status.value == value, orElse: () => PaymentStatus.pending);
-  }
+  static PaymentStatus fromString(String value) =>
+      PaymentStatus.values.firstWhere((status) => status.value == value, orElse: () => PaymentStatus.pending);
 
   bool get isPending => this == PaymentStatus.pending;
   bool get isProcessing => this == PaymentStatus.processing;
@@ -420,4 +425,3 @@ enum PaymentStatus {
 
   bool get isSuccessful => this == PaymentStatus.completed || this == PaymentStatus.refunded;
 }
-

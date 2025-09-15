@@ -385,10 +385,9 @@ class _UserDetailScreenState extends State<UserDetailScreen> with SingleTickerPr
               title: const Text('Chỉnh sửa thông tin'),
               onTap: () {
                 Navigator.of(context).pop();
-                // TODO: Navigate to edit user screen
-                ScaffoldMessenger.of(
+                Navigator.of(
                   context,
-                ).showSnackBar(const SnackBar(content: Text('Tính năng chỉnh sửa đang phát triển')));
+                ).push(MaterialPageRoute(builder: (_) => UserProfileEditScreen(userId: widget.userId)));
               },
             ),
             ListTile(
@@ -580,4 +579,3 @@ class _UserDetailScreenState extends State<UserDetailScreen> with SingleTickerPr
     }
   }
 }
-

@@ -67,23 +67,18 @@ extension ContextExtensions on BuildContext {
   }
 
   /// Navigate to new screen
-  Future<T?> navigateTo<T>(Widget screen) {
-    return Navigator.push<T>(this, MaterialPageRoute(builder: (context) => screen));
-  }
+  Future<T?> navigateTo<T>(Widget screen) => Navigator.push<T>(this, MaterialPageRoute(builder: (context) => screen));
 
   /// Navigate and replace current screen
-  Future<T?> navigateAndReplace<T>(Widget screen) {
-    return Navigator.pushReplacement<T, dynamic>(this, MaterialPageRoute(builder: (context) => screen));
-  }
+  Future<T?> navigateAndReplace<T>(Widget screen) =>
+      Navigator.pushReplacement<T, dynamic>(this, MaterialPageRoute(builder: (context) => screen));
 
   /// Navigate and remove all previous screens
-  Future<T?> navigateAndRemoveUntil<T>(Widget screen, {String? routeName}) {
-    return Navigator.pushAndRemoveUntil<T>(
-      this,
-      MaterialPageRoute(builder: (context) => screen),
-      (route) => routeName != null ? route.settings.name == routeName : false,
-    );
-  }
+  Future<T?> navigateAndRemoveUntil<T>(Widget screen, {String? routeName}) => Navigator.pushAndRemoveUntil<T>(
+    this,
+    MaterialPageRoute(builder: (context) => screen),
+    (route) => routeName != null ? route.settings.name == routeName : false,
+  );
 
   /// Go back
   void goBack<T>({T? result}) {

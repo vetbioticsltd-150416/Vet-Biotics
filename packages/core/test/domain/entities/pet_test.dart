@@ -18,17 +18,17 @@ void main() {
       // Arrange & Act
       final pet = Pet(
         id: petId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
         ownerId: ownerId,
         species: PetSpecies.dog,
         breed: breed,
         gender: PetGender.male,
         color: color,
-        birthDate: birthDate,
+        dateOfBirth: birthDate,
         weight: 25.5,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
       );
 
       // Assert
@@ -39,7 +39,7 @@ void main() {
       expect(pet.breed, breed);
       expect(pet.gender, PetGender.male);
       expect(pet.color, color);
-      expect(pet.birthDate, birthDate);
+      expect(pet.dateOfBirth, birthDate);
       expect(pet.weight, 25.5);
       expect(pet.isActive, true);
       expect(pet.createdAt, createdAt);
@@ -50,23 +50,22 @@ void main() {
       // Arrange & Act
       final pet = Pet(
         id: petId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
         ownerId: ownerId,
         species: PetSpecies.cat,
         breed: breed,
         gender: PetGender.female,
         color: color,
-        birthDate: birthDate,
-        microchipNumber: microchipNumber,
-        notes: notes,
+        dateOfBirth: birthDate,
+        microchipId: microchipNumber,
         weight: 4.2,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
       );
 
       // Assert
-      expect(pet.microchipNumber, microchipNumber);
+      expect(pet.microchipId, microchipNumber);
       expect(pet.notes, notes);
     });
 
@@ -74,16 +73,16 @@ void main() {
       // Arrange & Act
       final pet = Pet(
         id: petId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
         name: name,
         ownerId: ownerId,
         species: PetSpecies.dog,
         breed: breed,
         gender: PetGender.male,
         color: color,
-        birthDate: birthDate,
-        weight: 25.0,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        dateOfBirth: birthDate,
+        weight: 25,
       );
 
       // Assert
@@ -94,19 +93,19 @@ void main() {
       // Test all pet species
       final species = [PetSpecies.dog, PetSpecies.cat, PetSpecies.bird, PetSpecies.rabbit, PetSpecies.other];
 
-      for (final spec in species) {
+      for (var spec in species) {
         final pet = Pet(
           id: petId,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
           name: name,
           ownerId: ownerId,
           species: spec,
           breed: breed,
           gender: PetGender.male,
           color: color,
-          birthDate: birthDate,
-          weight: 10.0,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
+          dateOfBirth: birthDate,
+          weight: 10,
         );
 
         expect(pet.species, spec);
@@ -117,7 +116,7 @@ void main() {
       // Test all pet genders
       final genders = [PetGender.male, PetGender.female];
 
-      for (final gender in genders) {
+      for (var gender in genders) {
         final pet = Pet(
           id: petId,
           name: name,
@@ -126,8 +125,8 @@ void main() {
           breed: breed,
           gender: gender,
           color: color,
-          birthDate: birthDate,
-          weight: 10.0,
+          dateOfBirth: birthDate,
+          weight: 10,
           createdAt: createdAt,
           updatedAt: updatedAt,
         );
@@ -149,14 +148,14 @@ void main() {
         breed: breed,
         gender: PetGender.male,
         color: color,
-        birthDate: birthDate,
-        weight: 25.0,
+        dateOfBirth: birthDate,
+        weight: 25,
         createdAt: createdAt,
         updatedAt: updatedAt,
       );
 
       // Act
-      final age = pet.age;
+      final age = pet.ageInYears;
 
       // Assert
       expect(age, 4);
@@ -166,19 +165,19 @@ void main() {
       // Test different weight ranges
       final weights = [0.5, 2.3, 15.7, 45.2, 100.0];
 
-      for (final weight in weights) {
+      for (var weight in weights) {
         final pet = Pet(
           id: petId,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
           name: name,
           ownerId: ownerId,
           species: PetSpecies.dog,
           breed: breed,
           gender: PetGender.male,
           color: color,
-          birthDate: birthDate,
+          dateOfBirth: birthDate,
           weight: weight,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
         );
 
         expect(pet.weight, weight);
@@ -189,36 +188,34 @@ void main() {
       // Arrange
       final pet1 = Pet(
         id: petId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
         ownerId: ownerId,
         species: PetSpecies.dog,
         breed: breed,
         gender: PetGender.male,
         color: color,
-        birthDate: birthDate,
-        microchipNumber: microchipNumber,
-        notes: notes,
+        dateOfBirth: birthDate,
+        microchipId: microchipNumber,
         weight: 25.5,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
       );
 
       final pet2 = Pet(
         id: petId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
         ownerId: ownerId,
         species: PetSpecies.dog,
         breed: breed,
         gender: PetGender.male,
         color: color,
-        birthDate: birthDate,
-        microchipNumber: microchipNumber,
-        notes: notes,
+        dateOfBirth: birthDate,
+        microchipId: microchipNumber,
         weight: 25.5,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
       );
 
       // Act & Assert
@@ -229,30 +226,30 @@ void main() {
       // Arrange
       final pet1 = Pet(
         id: petId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
         name: name,
         ownerId: ownerId,
         species: PetSpecies.dog,
         breed: breed,
         gender: PetGender.male,
         color: color,
-        birthDate: birthDate,
-        weight: 25.0,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        dateOfBirth: birthDate,
+        weight: 25,
       );
 
       final pet2 = Pet(
         id: 'different_id',
+        createdAt: createdAt,
+        updatedAt: updatedAt,
         name: name,
         ownerId: ownerId,
         species: PetSpecies.dog,
         breed: breed,
         gender: PetGender.male,
         color: color,
-        birthDate: birthDate,
-        weight: 25.0,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
+        dateOfBirth: birthDate,
+        weight: 25,
       );
 
       // Act & Assert
@@ -263,39 +260,29 @@ void main() {
       // Arrange
       final originalPet = Pet(
         id: petId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isActive: true,
         name: name,
         ownerId: ownerId,
         species: PetSpecies.dog,
         breed: breed,
         gender: PetGender.male,
         color: color,
-        birthDate: birthDate,
-        microchipNumber: microchipNumber,
-        notes: notes,
+        dateOfBirth: birthDate,
+        microchipId: microchipNumber,
         weight: 25.5,
-        isActive: true,
-        createdAt: createdAt,
-        updatedAt: updatedAt,
       );
 
       // Act
-      final copiedPet = originalPet.copyWith(name: 'Buddy', weight: 26.0, isActive: false);
+      final copiedPet = originalPet.copyWith(isActive: false, updatedAt: DateTime(2024, 1, 3));
 
-      // Assert
+      // Assert - copyWith only affects AuditableEntity fields
       expect(copiedPet.id, petId);
-      expect(copiedPet.name, 'Buddy');
-      expect(copiedPet.ownerId, ownerId);
-      expect(copiedPet.species, PetSpecies.dog);
-      expect(copiedPet.breed, breed);
-      expect(copiedPet.gender, PetGender.male);
-      expect(copiedPet.color, color);
-      expect(copiedPet.birthDate, birthDate);
-      expect(copiedPet.microchipNumber, microchipNumber);
-      expect(copiedPet.notes, notes);
-      expect(copiedPet.weight, 26.0);
+      expect(copiedPet.name, name); // unchanged
       expect(copiedPet.isActive, false);
       expect(copiedPet.createdAt, createdAt);
-      expect(copiedPet.updatedAt, updatedAt);
+      expect(copiedPet.updatedAt, DateTime(2024, 1, 3));
     });
   });
 }

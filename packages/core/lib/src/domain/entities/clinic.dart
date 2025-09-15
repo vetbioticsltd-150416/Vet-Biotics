@@ -1,4 +1,4 @@
-import 'package:core/src/domain/entities/base_entity.dart';
+import 'base_entity.dart';
 
 /// Clinic status
 enum ClinicStatus {
@@ -11,9 +11,8 @@ enum ClinicStatus {
   final String value;
   final String displayName;
 
-  static ClinicStatus fromString(String value) {
-    return ClinicStatus.values.firstWhere((status) => status.value == value, orElse: () => ClinicStatus.active);
-  }
+  static ClinicStatus fromString(String value) =>
+      ClinicStatus.values.firstWhere((status) => status.value == value, orElse: () => ClinicStatus.active);
 
   bool get isActive => this == ClinicStatus.active;
 }
@@ -36,10 +35,10 @@ class Clinic extends AuditableEntity {
   final Map<String, dynamic>? settings;
   final Map<String, dynamic>? metadata;
 
-  const Clinic({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  Clinic({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.name,
     this.description,
@@ -56,7 +55,7 @@ class Clinic extends AuditableEntity {
     this.contactInfo,
     this.settings,
     this.metadata,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now());
 
   @override
   List<Object?> get props => [
@@ -79,9 +78,7 @@ class Clinic extends AuditableEntity {
   ];
 
   @override
-  bool get isValid {
-    return super.isValid && name.isNotEmpty && ownerId.isNotEmpty;
-  }
+  bool get isValid => name.isNotEmpty && ownerId.isNotEmpty;
 
   @override
   List<String> get validationErrors {
@@ -108,49 +105,58 @@ class Clinic extends AuditableEntity {
     return errors;
   }
 
+  @override
   Clinic copyWith({
     String? id,
-    String? name,
-    String? description,
-    String? address,
-    String? phone,
-    String? email,
-    String? website,
-    String? logoUrl,
-    List<String>? imageUrls,
-    ClinicStatus? status,
-    String? ownerId,
-    Map<String, dynamic>? businessHours,
-    List<String>? services,
-    Map<String, dynamic>? contactInfo,
-    Map<String, dynamic>? settings,
     DateTime? createdAt,
     DateTime? updatedAt,
     bool? isActive,
-    Map<String, dynamic>? metadata,
-  }) {
-    return Clinic(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      description: description ?? this.description,
-      address: address ?? this.address,
-      phone: phone ?? this.phone,
-      email: email ?? this.email,
-      website: website ?? this.website,
-      logoUrl: logoUrl ?? this.logoUrl,
-      imageUrls: imageUrls ?? this.imageUrls,
-      status: status ?? this.status,
-      ownerId: ownerId ?? this.ownerId,
-      businessHours: businessHours ?? this.businessHours,
-      services: services ?? this.services,
-      contactInfo: contactInfo ?? this.contactInfo,
-      settings: settings ?? this.settings,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      isActive: isActive ?? this.isActive,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+    String? createdBy,
+    String? updatedBy,
+  }) => Clinic(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    name: name,
+    ownerId: ownerId,
+    description: description,
+    address: address,
+    phone: phone,
+    email: email,
+    website: website,
+    logoUrl: logoUrl,
+    imageUrls: imageUrls,
+    status: status,
+    businessHours: businessHours,
+    services: services,
+    contactInfo: contactInfo,
+    settings: settings,
+    metadata: metadata,
+  );
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'isActive': isActive,
+    'name': name,
+    'ownerId': ownerId,
+    'description': description,
+    'address': address,
+    'phone': phone,
+    'email': email,
+    'website': website,
+    'logoUrl': logoUrl,
+    'imageUrls': imageUrls,
+    'status': status.value,
+    'businessHours': businessHours,
+    'services': services,
+    'contactInfo': contactInfo,
+    'settings': settings,
+    'metadata': metadata,
+  };
 }
 
 /// Clinic service
@@ -175,31 +181,27 @@ class ClinicService {
     this.metadata,
   });
 
-  factory ClinicService.fromJson(Map<String, dynamic> json) {
-    return ClinicService(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      description: json['description'] as String?,
-      price: (json['price'] as num).toDouble(),
-      durationMinutes: json['durationMinutes'] as int,
-      isActive: json['isActive'] as bool? ?? true,
-      category: json['category'] as String?,
-      metadata: json['metadata'] as Map<String, dynamic>?,
-    );
-  }
+  factory ClinicService.fromJson(Map<String, dynamic> json) => ClinicService(
+    id: json['id'] as String,
+    name: json['name'] as String,
+    description: json['description'] as String?,
+    price: (json['price'] as num).toDouble(),
+    durationMinutes: json['durationMinutes'] as int,
+    isActive: json['isActive'] as bool? ?? true,
+    category: json['category'] as String?,
+    metadata: json['metadata'] as Map<String, dynamic>?,
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'price': price,
-      'durationMinutes': durationMinutes,
-      'isActive': isActive,
-      'category': category,
-      'metadata': metadata,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'description': description,
+    'price': price,
+    'durationMinutes': durationMinutes,
+    'isActive': isActive,
+    'category': category,
+    'metadata': metadata,
+  };
 }
 
 /// Clinic staff
@@ -208,14 +210,15 @@ class ClinicStaff extends AuditableEntity {
   final String clinicId;
   final String role;
   final List<String>? permissions;
+  @override
   final bool isActive;
   final Map<String, dynamic>? schedule;
   final Map<String, dynamic>? metadata;
 
-  const ClinicStaff({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  ClinicStaff({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.userId,
     required this.clinicId,
@@ -223,12 +226,74 @@ class ClinicStaff extends AuditableEntity {
     this.permissions,
     this.schedule,
     this.metadata,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now()),
+       isActive = isActive;
+
+  @override
+  bool get isValid => userId.isNotEmpty && clinicId.isNotEmpty && role.isNotEmpty;
+
+  @override
+  List<String> get validationErrors {
+    final errors = <String>[];
+
+    if (userId.isEmpty) {
+      errors.add('User ID không được để trống');
+    }
+
+    if (clinicId.isEmpty) {
+      errors.add('Clinic ID không được để trống');
+    }
+
+    if (role.isEmpty) {
+      errors.add('Role không được để trống');
+    }
+
+    return errors;
+  }
 
   @override
   List<Object?> get props => [...super.props, userId, clinicId, role, permissions, schedule, metadata];
 
-  bool hasPermission(String permission) {
-    return permissions?.contains(permission) ?? false;
-  }
+  bool hasPermission(String permission) => permissions?.contains(permission) ?? false;
+
+  @override
+  ClinicStaff copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? isActive,
+    String? createdBy,
+    String? updatedBy,
+    String? userId,
+    String? clinicId,
+    String? role,
+    List<String>? permissions,
+    Map<String, dynamic>? schedule,
+    Map<String, dynamic>? metadata,
+  }) => ClinicStaff(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    userId: userId ?? this.userId,
+    clinicId: clinicId ?? this.clinicId,
+    role: role ?? this.role,
+    permissions: permissions ?? this.permissions,
+    schedule: schedule ?? this.schedule,
+    metadata: metadata ?? this.metadata,
+  );
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'isActive': isActive,
+    'userId': userId,
+    'clinicId': clinicId,
+    'role': role,
+    'permissions': permissions,
+    'schedule': schedule,
+    'metadata': metadata,
+  };
 }

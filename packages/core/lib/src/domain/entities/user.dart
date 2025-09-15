@@ -1,4 +1,4 @@
-import 'package:core/src/domain/entities/base_entity.dart';
+import 'base_entity.dart';
 
 /// User roles in the system
 enum UserRole {
@@ -11,9 +11,8 @@ enum UserRole {
   const UserRole(this.value);
   final String value;
 
-  static UserRole fromString(String value) {
-    return UserRole.values.firstWhere((role) => role.value == value, orElse: () => UserRole.client);
-  }
+  static UserRole fromString(String value) =>
+      UserRole.values.firstWhere((role) => role.value == value, orElse: () => UserRole.client);
 
   String get displayName {
     switch (this) {
@@ -41,9 +40,8 @@ enum UserStatus {
   const UserStatus(this.value);
   final String value;
 
-  static UserStatus fromString(String value) {
-    return UserStatus.values.firstWhere((status) => status.value == value, orElse: () => UserStatus.pending);
-  }
+  static UserStatus fromString(String value) =>
+      UserStatus.values.firstWhere((status) => status.value == value, orElse: () => UserStatus.pending);
 
   bool get isActive => this == UserStatus.active;
   bool get isInactive => this == UserStatus.inactive;
@@ -66,10 +64,10 @@ class User extends AuditableEntity {
   final DateTime? lastLoginAt;
   final Map<String, dynamic>? metadata;
 
-  const User({
-    super.id,
-    super.createdAt,
-    super.updatedAt,
+  User({
+    super.id = '',
+    DateTime? createdAt,
+    DateTime? updatedAt,
     super.isActive,
     required this.email,
     this.phoneNumber,
@@ -83,7 +81,7 @@ class User extends AuditableEntity {
     this.status = UserStatus.pending,
     this.lastLoginAt,
     this.metadata,
-  });
+  }) : super(createdAt: createdAt ?? DateTime.now(), updatedAt: updatedAt ?? DateTime.now());
 
   /// Get full name
   String get fullName {
@@ -123,16 +121,26 @@ class User extends AuditableEntity {
   bool get isVerified => status == UserStatus.active;
 
   /// Check if user can access clinic features
-  bool get canAccessClinic => role == UserRole.doctor || role == UserRole.staff || role == UserRole.admin;
+  bool get canAccessClinic =>
+      role == UserRole.veterinarian ||
+      role == UserRole.receptionist ||
+      role == UserRole.clinicAdmin ||
+      role == UserRole.superAdmin;
 
   /// Check if user is admin
-  bool get isAdmin => role == UserRole.admin;
+  bool get isAdmin => role == UserRole.clinicAdmin || role == UserRole.superAdmin;
 
-  /// Check if user is doctor
-  bool get isDoctor => role == UserRole.doctor;
+  /// Check if user is super admin
+  bool get isSuperAdmin => role == UserRole.superAdmin;
 
-  /// Check if user is staff
-  bool get isStaff => role == UserRole.staff;
+  /// Check if user is veterinarian
+  bool get isVeterinarian => role == UserRole.veterinarian;
+
+  /// Check if user is receptionist
+  bool get isReceptionist => role == UserRole.receptionist;
+
+  /// Check if user is clinic admin
+  bool get isClinicAdmin => role == UserRole.clinicAdmin;
 
   /// Check if user is client
   bool get isClient => role == UserRole.client;
@@ -155,9 +163,7 @@ class User extends AuditableEntity {
   ];
 
   @override
-  bool get isValid {
-    return super.isValid && email.isNotEmpty && (firstName?.isNotEmpty ?? true) && (lastName?.isNotEmpty ?? true);
-  }
+  bool get isValid => email.isNotEmpty && (firstName?.isNotEmpty ?? true) && (lastName?.isNotEmpty ?? true);
 
   @override
   List<String> get validationErrors {
@@ -187,6 +193,7 @@ class User extends AuditableEntity {
   }
 
   /// Create a copy with updated fields
+  @override
   User copyWith({
     String? id,
     String? email,
@@ -204,26 +211,44 @@ class User extends AuditableEntity {
     DateTime? updatedAt,
     bool? isActive,
     Map<String, dynamic>? metadata,
-  }) {
-    return User(
-      id: id ?? this.id,
-      email: email ?? this.email,
-      phoneNumber: phoneNumber ?? this.phoneNumber,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      avatarUrl: avatarUrl ?? this.avatarUrl,
-      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
-      address: address ?? this.address,
-      clinicId: clinicId ?? this.clinicId,
-      role: role ?? this.role,
-      status: status ?? this.status,
-      lastLoginAt: lastLoginAt ?? this.lastLoginAt,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      isActive: isActive ?? this.isActive,
-      metadata: metadata ?? this.metadata,
-    );
-  }
+  }) => User(
+    id: id ?? this.id,
+    email: email ?? this.email,
+    phoneNumber: phoneNumber ?? this.phoneNumber,
+    firstName: firstName ?? this.firstName,
+    lastName: lastName ?? this.lastName,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+    dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+    address: address ?? this.address,
+    clinicId: clinicId ?? this.clinicId,
+    role: role ?? this.role,
+    status: status ?? this.status,
+    lastLoginAt: lastLoginAt ?? this.lastLoginAt,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    isActive: isActive ?? this.isActive,
+    metadata: metadata ?? this.metadata,
+  );
+
+  @override
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'isActive': isActive,
+    'email': email,
+    'firstName': firstName,
+    'lastName': lastName,
+    'phoneNumber': phoneNumber,
+    'avatarUrl': avatarUrl,
+    'dateOfBirth': dateOfBirth?.toIso8601String(),
+    'address': address,
+    'clinicId': clinicId,
+    'role': role.value,
+    'status': status.value,
+    'lastLoginAt': lastLoginAt?.toIso8601String(),
+    'metadata': metadata,
+  };
 }
 
 /// User profile - simplified version for public display
@@ -244,16 +269,14 @@ class UserProfile {
     this.clinicId,
   });
 
-  factory UserProfile.fromUser(User user) {
-    return UserProfile(
-      id: user.id ?? '',
-      displayName: user.displayName,
-      avatarUrl: user.avatarUrl,
-      role: user.role,
-      status: user.status,
-      clinicId: user.clinicId,
-    );
-  }
+  factory UserProfile.fromUser(User user) => UserProfile(
+    id: user.id ?? '',
+    displayName: user.displayName,
+    avatarUrl: user.avatarUrl,
+    role: user.role,
+    status: user.status,
+    clinicId: user.clinicId,
+  );
 }
 
 /// User authentication data
@@ -274,25 +297,21 @@ class UserAuth {
     this.role,
   });
 
-  factory UserAuth.fromJson(Map<String, dynamic> json) {
-    return UserAuth(
-      uid: json['uid'] as String,
-      email: json['email'] as String,
-      displayName: json['displayName'] as String?,
-      photoUrl: json['photoUrl'] as String?,
-      emailVerified: json['emailVerified'] as bool? ?? false,
-      role: json['role'] != null ? UserRole.fromString(json['role'] as String) : null,
-    );
-  }
+  factory UserAuth.fromJson(Map<String, dynamic> json) => UserAuth(
+    uid: json['uid'] as String,
+    email: json['email'] as String,
+    displayName: json['displayName'] as String?,
+    photoUrl: json['photoUrl'] as String?,
+    emailVerified: json['emailVerified'] as bool? ?? false,
+    role: json['role'] != null ? UserRole.fromString(json['role'] as String) : null,
+  );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'uid': uid,
-      'email': email,
-      'displayName': displayName,
-      'photoUrl': photoUrl,
-      'emailVerified': emailVerified,
-      'role': role?.value,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'uid': uid,
+    'email': email,
+    'displayName': displayName,
+    'photoUrl': photoUrl,
+    'emailVerified': emailVerified,
+    'role': role?.value,
+  };
 }

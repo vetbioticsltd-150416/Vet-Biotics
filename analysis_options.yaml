@@ -21,8 +21,78 @@ linter:
   # `// ignore_for_file: name_of_lint` syntax on the line or in the file
   # producing the lint.
   rules:
-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+    # Auto-fixable rules
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    unnecessary_const: true
+    unnecessary_new: true
+    unnecessary_this: true
+    use_key_in_widget_constructors: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    unnecessary_final: true
+    sort_child_properties_last: true
+    prefer_single_quotes: true
+    use_raw_strings: true
+    use_function_type_syntax_for_parameters: true
+    avoid_function_literals_in_foreach_calls: true
+    prefer_iterable_whereType: true
+    prefer_foreach: true
+    avoid_returning_null_for_void: true
+    prefer_null_aware_operators: true
+    prefer_if_null_operators: true
+    prefer_conditional_assignment: true
+    join_return_with_assignment: true
+    use_is_even_rather_than_modulo: true
+    use_is_empty_rather_than_length: true
+    prefer_adjacent_string_concatenation: true
+    unnecessary_string_interpolations: true
+    use_string_buffers: true
+    unnecessary_parenthesis: true
+    prefer_generic_function_type_aliases: true
+    avoid_init_to_null: true
+    prefer_typing_uninitialized_variables: true
+    unnecessary_getters_setters: true
+    use_setters_to_change_properties: true
+    avoid_returning_this: true
+    type_init_formals: true
+    empty_constructor_bodies: true
+    unnecessary_null_in_if_null_operators: true
+    prefer_if_elements_to_conditional_expressions: true
+    diagnostic_describe_all_properties: true
+    prefer_int_literals: true
+    prefer_spread_collections: true
+    use_named_constants: true
+    unnecessary_null_checks: true
+    prefer_asserts_in_initializer_lists: true
+    invariant_booleans: true
+    avoid_js_rounded_ints: true
+
+    # Other useful rules (some auto-fixable)
+    avoid_print: false  # Keep disabled for development
+    always_declare_return_types: true
+    avoid_empty_else: true
+    avoid_relative_lib_imports: true
+    avoid_shadowing_type_parameters: true
+    avoid_types_as_parameter_names: true
+    await_only_futures: true
+    camel_case_types: true
+    constant_identifier_names: true
+    empty_catches: false  # Keep disabled as it can hide errors
+    file_names: true
+    library_names: true
+    library_prefixes: true
+    non_constant_identifier_names: true
+    null_closures: true
+    package_names: true
+    prefer_mixin: true
+    prefer_expression_function_bodies: true
+    slash_for_doc_comments: true
+    type_annotate_public_apis: true
+    unnecessary_brace_in_string_interps: true
+    unnecessary_lambdas: true
+    void_checks: true
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options

@@ -1,6 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared/src/constants/ui_constants.dart';
+import 'package:vet_biotics_shared/shared.dart';
 
 /// Custom text field with validation and various input types
 class CustomTextField extends StatefulWidget {
@@ -77,6 +78,42 @@ class CustomTextField extends StatefulWidget {
 
   @override
   State<CustomTextField> createState() => _CustomTextFieldState();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<TextEditingController?>('controller', controller));
+    properties.add(StringProperty('labelText', labelText));
+    properties.add(StringProperty('hintText', hintText));
+    properties.add(StringProperty('helperText', helperText));
+    properties.add(StringProperty('errorText', errorText));
+    properties.add(DiagnosticsProperty<TextInputType?>('keyboardType', keyboardType));
+    properties.add(EnumProperty<TextInputAction?>('textInputAction', textInputAction));
+    properties.add(DiagnosticsProperty<bool>('obscureText', obscureText));
+    properties.add(DiagnosticsProperty<bool>('enabled', enabled));
+    properties.add(DiagnosticsProperty<bool>('readOnly', readOnly));
+    properties.add(IntProperty('maxLines', maxLines));
+    properties.add(IntProperty('minLines', minLines));
+    properties.add(IntProperty('maxLength', maxLength));
+    properties.add(IterableProperty<TextInputFormatter>('inputFormatters', inputFormatters));
+    properties.add(ObjectFlagProperty<VoidCallback?>.has('onSuffixIconPressed', onSuffixIconPressed));
+    properties.add(ObjectFlagProperty<ValueChanged<String>?>.has('onChanged', onChanged));
+    properties.add(ObjectFlagProperty<ValueChanged<String>?>.has('onSubmitted', onSubmitted));
+    properties.add(ObjectFlagProperty<VoidCallback?>.has('onTap', onTap));
+    properties.add(ObjectFlagProperty<FormFieldValidator<String>?>.has('validator', validator));
+    properties.add(EnumProperty<AutovalidateMode?>('autovalidateMode', autovalidateMode));
+    properties.add(DiagnosticsProperty<EdgeInsetsGeometry?>('contentPadding', contentPadding));
+    properties.add(DiagnosticsProperty<BorderRadius?>('borderRadius', borderRadius));
+    properties.add(ColorProperty('fillColor', fillColor));
+    properties.add(DiagnosticsProperty<bool>('filled', filled));
+    properties.add(DiagnosticsProperty<TextStyle?>('style', style));
+    properties.add(DiagnosticsProperty<TextStyle?>('labelStyle', labelStyle));
+    properties.add(DiagnosticsProperty<TextStyle?>('hintStyle', hintStyle));
+    properties.add(DiagnosticsProperty<TextStyle?>('errorStyle', errorStyle));
+    properties.add(DiagnosticsProperty<TextStyle?>('helperStyle', helperStyle));
+    properties.add(DiagnosticsProperty<FocusNode?>('focusNode', focusNode));
+    properties.add(DiagnosticsProperty<bool>('autofocus', autofocus));
+  }
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
@@ -131,14 +168,23 @@ class _CustomTextFieldState extends State<CustomTextField> {
         disabledBorder: _buildBorder(theme, false, isDisabled: true),
         labelStyle:
             widget.labelStyle ??
-            TextStyle(fontSize: UiConstants.fontSizeM, color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7)),
+            TextStyle(
+              fontSize: UiConstants.fontSizeM,
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+            ),
         hintStyle:
             widget.hintStyle ??
-            TextStyle(fontSize: UiConstants.fontSizeM, color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5)),
+            TextStyle(
+              fontSize: UiConstants.fontSizeM,
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+            ),
         errorStyle: widget.errorStyle ?? TextStyle(fontSize: UiConstants.fontSizeS, color: theme.colorScheme.error),
         helperStyle:
             widget.helperStyle ??
-            TextStyle(fontSize: UiConstants.fontSizeS, color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7)),
+            TextStyle(
+              fontSize: UiConstants.fontSizeS,
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+            ),
       ),
     );
   }
@@ -225,7 +271,7 @@ class EmailTextField extends CustomTextField {
 
 /// Custom phone text field
 class PhoneTextField extends CustomTextField {
-  const PhoneTextField({
+  PhoneTextField({
     super.key,
     super.controller,
     super.labelText = 'Số điện thoại',
@@ -241,7 +287,7 @@ class PhoneTextField extends CustomTextField {
          keyboardType: TextInputType.phone,
          textInputAction: TextInputAction.next,
          prefixIcon: const Icon(Icons.phone_outlined),
-         inputFormatters: const [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
+         inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(10)],
        );
 }
 
@@ -260,6 +306,6 @@ class SearchTextField extends CustomTextField {
          keyboardType: TextInputType.text,
          textInputAction: TextInputAction.search,
          prefixIcon: const Icon(Icons.search),
-         borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+         borderRadius: const BorderRadius.all(Radius.circular(24)),
        );
 }

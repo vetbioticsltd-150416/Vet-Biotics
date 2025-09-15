@@ -26,10 +26,6 @@ dependencies:
   # Local storage
   shared_preferences: ^2.2.2
 
-  # Firebase Auth (optional - can be toggled)
-  firebase_auth: ^4.19.4
-  google_sign_in: ^6.2.1
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -39,3 +35,10 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+
+scripts:
+  format: dart format .
+  format:fix: dart format --fix .
+  fix: dart fix --apply
+  analyze: flutter analyze
+  test: flutter test

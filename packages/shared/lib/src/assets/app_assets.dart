@@ -54,10 +54,7 @@ class AppAssets {
   }
 
   // Check if asset exists (for debugging)
-  static bool assetExists(String asset) {
-    // This would be implemented with AssetManifest in a real app
-    return true;
-  }
+  static bool assetExists(String asset) => true;
 
   // Get placeholder image based on type
   static String getPlaceholderImage(String type) {
@@ -93,12 +90,9 @@ class AppAssets {
   }
 
   // Get pet breed image
-  static String getPetBreedImage(String breed) {
-    return '$petBreedsPath${breed.toLowerCase().replaceAll(' ', '_')}.png';
-  }
+  static String getPetBreedImage(String breed) => '$petBreedsPath${breed.toLowerCase().replaceAll(' ', '_')}.png';
 
   // Get medical specialty icon
-  static String getMedicalSpecialtyIcon(String specialty) {
-    return '$medicalIconsPath${specialty.toLowerCase().replaceAll(' ', '_')}.svg';
-  }
+  static String getMedicalSpecialtyIcon(String specialty) =>
+      '$medicalIconsPath${specialty.toLowerCase().replaceAll(' ', '_')}.svg';
 }

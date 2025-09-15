@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vet_biotics_core/core.dart';
 
-import '../services/firebase_auth_service.dart';
-
 enum AuthStatus { initial, loading, authenticated, unauthenticated, error }
 
 class AuthProvider extends ChangeNotifier {
-  final FirebaseAuthService _authService;
+  // TODO: Replace with Azure AD B2C service
+  // final AzureAuthService _authService;
   final SharedPreferences _prefs;
 
   AuthStatus _status = AuthStatus.initial;
   String? _errorMessage;
   User? _currentUser;
 
-  AuthProvider(this._prefs, {FirebaseAuthService? authService}) : _authService = authService ?? FirebaseAuthService() {
+  AuthProvider(this._prefs) {
     _init();
   }
 
@@ -24,103 +23,39 @@ class AuthProvider extends ChangeNotifier {
   bool get isAuthenticated => _currentUser != null;
 
   void _init() {
-    _authService.authStateChanges.listen((User? user) {
-      _currentUser = user;
-      _status = user != null ? AuthStatus.authenticated : AuthStatus.unauthenticated;
-      notifyListeners();
-
-      if (user != null) {
-        _saveUserSession(user);
-      } else {
-        _clearUserSession();
-      }
-    });
+    // TODO: Implement Azure AD B2C auth state changes listener
+    _loadUserSession();
   }
 
-  Future<void> signInWithEmailAndPassword(String email, String password) async {
-    try {
-      _setLoading();
-      await _authService.signInWithEmailAndPassword(email: email, password: password);
-    } on AuthException catch (e) {
-      _setError(e.message);
-    } catch (e) {
-      _setError('An unexpected error occurred');
-    }
+  Future<void> _loadUserSession() async {
+    // TODO: Load user session from Azure AD B2C tokens
+    // For now, assume user is not authenticated
+    _status = AuthStatus.unauthenticated;
+    notifyListeners();
   }
 
-  Future<void> signUpWithEmailAndPassword(String email, String password) async {
-    try {
-      _setLoading();
-      final result = await _authService.createUserWithEmailAndPassword(email: email, password: password);
-
-      // Send email verification
-      await _authService.sendEmailVerification();
-    } on AuthException catch (e) {
-      _setError(e.message);
-    } catch (e) {
-      _setError('An unexpected error occurred');
-    }
+  Future<void> _saveUserSession(User user) async {
+    // TODO: Save Azure AD B2C tokens to secure storage
+    await _prefs.setString('user_id', user.id ?? '');
+    await _prefs.setString('user_email', user.email);
+    await _prefs.setString('user_role', user.role.value);
   }
 
-  Future<void> signInWithGoogle() async {
-    try {
-      _setLoading();
-      await _authService.signInWithGoogle();
-    } on AuthException catch (e) {
-      _setError(e.message);
-    } catch (e) {
-      _setError('Failed to sign in with Google');
-    }
-  }
-
-  Future<void> sendPasswordResetEmail(String email) async {
-    try {
-      _setLoading();
-      await _authService.sendPasswordResetEmail(email);
-      _status = AuthStatus.initial; // Reset to initial state
-      notifyListeners();
-    } on AuthException catch (e) {
-      _setError(e.message);
-    } catch (e) {
-      _setError('Failed to send password reset email');
-    }
-  }
-
-  Future<void> sendEmailVerification() async {
-    try {
-      _setLoading();
-      await _authService.sendEmailVerification();
-      _status = AuthStatus.initial;
-      notifyListeners();
-    } on AuthException catch (e) {
-      _setError(e.message);
-    } catch (e) {
-      _setError('Failed to send email verification');
-    }
-  }
-
-  Future<void> reloadUser() async {
-    try {
-      await _authService.reload();
-      _currentUser = _authService.currentUser;
-      notifyListeners();
-    } catch (e) {
-      _setError('Failed to reload user data');
-    }
-  }
-
-  Future<void> signOut() async {
-    try {
-      await _authService.signOut();
-    } on AuthException catch (e) {
-      _setError(e.message);
-    } catch (e) {
-      _setError('Failed to sign out');
-    }
+  Future<void> _clearUserSession() async {
+    // TODO: Clear Azure AD B2C tokens
+    await _prefs.remove('user_id');
+    await _prefs.remove('user_email');
+    await _prefs.remove('user_role');
   }
 
   void _setLoading() {
     _status = AuthStatus.loading;
+    _errorMessage = null;
+    notifyListeners();
+  }
+
+  void _setSuccess() {
+    _status = AuthStatus.authenticated;
     _errorMessage = null;
     notifyListeners();
   }
@@ -136,23 +71,85 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> _saveUserSession(User user) async {
+  // TODO: Implement Azure AD B2C authentication methods
+
+  Future<void> signInWithEmailAndPassword(String email, String password) async {
     try {
-      await _prefs.setString('user_id', user.uid);
-      await _prefs.setString('user_email', user.email ?? '');
-      await _prefs.setBool('email_verified', user.emailVerified);
+      _setLoading();
+      // TODO: Implement Azure AD B2C sign in
+      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+      _setSuccess();
     } catch (e) {
-      // Handle storage error silently
+      _setError('Authentication failed');
     }
   }
 
-  Future<void> _clearUserSession() async {
+  Future<void> signUpWithEmailAndPassword(String email, String password) async {
     try {
-      await _prefs.remove('user_id');
-      await _prefs.remove('user_email');
-      await _prefs.remove('email_verified');
+      _setLoading();
+      // TODO: Implement Azure AD B2C sign up
+      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+      _setSuccess();
     } catch (e) {
-      // Handle storage error silently
+      _setError('Registration failed');
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      _setLoading();
+      // TODO: Implement Azure AD B2C Google sign in
+      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+      _setSuccess();
+    } catch (e) {
+      _setError('Google sign in failed');
+    }
+  }
+
+  Future<void> signOut() async {
+    try {
+      _setLoading();
+      // TODO: Implement Azure AD B2C sign out
+      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+      _clearUserSession();
+      _currentUser = null;
+      _status = AuthStatus.unauthenticated;
+      notifyListeners();
+    } catch (e) {
+      _setError('Sign out failed');
+    }
+  }
+
+  Future<void> resetPassword(String email) async {
+    try {
+      _setLoading();
+      // TODO: Implement Azure AD B2C password reset
+      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+      _setSuccess();
+    } catch (e) {
+      _setError('Password reset failed');
+    }
+  }
+
+  Future<void> sendEmailVerification() async {
+    try {
+      _setLoading();
+      // TODO: Implement Azure AD B2C email verification
+      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+      _setSuccess();
+    } catch (e) {
+      _setError('Email verification failed');
+    }
+  }
+
+  Future<void> reloadUser() async {
+    try {
+      _setLoading();
+      // TODO: Reload user from Azure AD B2C
+      await Future.delayed(const Duration(seconds: 1)); // Simulate API call
+      _setSuccess();
+    } catch (e) {
+      _setError('Failed to reload user');
     }
   }
 }
